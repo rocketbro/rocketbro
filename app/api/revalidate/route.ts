@@ -27,7 +27,7 @@ function isValidSignature(
     const signaturePayload = `${timestamp}.${body}`;
     const expectedHash = createHmac("sha256", secret)
       .update(signaturePayload)
-      .digest("base64");
+      .digest("hex");
 
     // Compare signatures
     const isValid = hash === expectedHash;
