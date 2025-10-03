@@ -1,26 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Configure dark mode to work with next-themes class-based approach */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Custom theme variables for semantic colors */
+@theme {
+  /* Light mode colors */
+  --color-background: oklch(100% 0 0);
+  --color-foreground: oklch(9% 0 0);
+  --color-border: oklch(89.8% 0 0);
+  --color-accent: oklch(47.7% 0.246 262.88);
+
+  /* Dark mode colors */
+  --color-background-dark: oklch(13% 0.006 285.88);
+  --color-foreground-dark: oklch(98.3% 0 0);
+  --color-border-dark: oklch(27.8% 0.033 256.85);
+  --color-accent-dark: oklch(69.7% 0.196 231.32);
+
+  /* Font families */
+  --font-display: var(--font-wix), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-garamond), ui-serif, Georgia, serif;
+  --font-mono: var(--font-ibm), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-garamond), ui-serif, Georgia, serif;
+  }
+
+  .dark body {
+    @apply bg-background-dark text-foreground-dark;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-wix), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  p {
+    font-family: var(--font-garamond), ui-serif, Georgia, serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Global font utilities */
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
 }
