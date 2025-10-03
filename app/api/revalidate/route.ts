@@ -1,15 +1,31 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 
+// GET handler for testing the endpoint
+export async function GET(request: NextRequest) {
+  const secret = request.nextUrl.searchParams.get("secret");
+
+  if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
+    return NextResponse.json({ message: "Invalid secret" }, { status: 401 });
+  }
+
+  return NextResponse.json({
+    message: "Webhook endpoint is working!",
+    timestamp: new Date().toISOString(),
+    ready: true,
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     console.log("🔔 Revalidation webhook called at:", new Date().toISOString());
+    console.log("📍 Request URL:", request.url);
+    console.log(
+      "📍 Request headers:",
+      Object.fromEntries(request.headers.entries()),
+    );
 
-    // Parse the request body
-    const body = await request.json();
-    console.log("📦 Received webhook payload:", JSON.stringify(body, null, 2));
-
-    // Verify the secret token
+    // Verify the secret token first
     const secret = request.nextUrl.searchParams.get("secret");
     const hasSecret = !!secret;
     const hasEnvSecret = !!process.env.SANITY_REVALIDATE_SECRET;
@@ -23,10 +39,24 @@ export async function POST(request: NextRequest) {
 
     console.log("✅ Secret validated successfully");
 
-    // Get the document type and slug from the webhook payload
-    const { _type, slug } = body;
-    console.log(`📝 Document type: ${_type}`);
+    // Parse the request body
+    const body = await request.json();
+    console.log("📦 Received webhook payload:", JSON.stringify(body, null, 2));
+
+    // Sanity webhook payload structure - check multiple possible locations
+    // The payload might be the document itself, or wrapped in different ways
+    const _type = body._type || body.type;
+    const slug = body.slug || body.data?.slug;
+
+    // Log what we extracted
+    console.log(`📝 Document type: ${_type || "UNKNOWN"}`);
     console.log(`📝 Slug: ${slug?.current || "N/A"}`);
+
+    // If we don't have a _type, log the entire structure for debugging
+    if (!_type) {
+      console.log("⚠️  No _type found in payload. Full structure:");
+      console.log("Keys:", Object.keys(body));
+    }
 
     // Revalidate based on document type
     switch (_type) {
@@ -77,7 +107,9 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`♻️  Revalidating for unknown type "${_type}"...`);
+        console.log(
+          `♻️  Revalidating for unknown type "${_type || "NONE"}"...`,
+        );
         // For any other document type, revalidate home page
         console.log("  → Revalidating path: /");
         revalidatePath("/");
@@ -88,8 +120,10 @@ export async function POST(request: NextRequest) {
     const response = {
       revalidated: true,
       now: Date.now(),
-      type: _type,
-      slug: slug?.current,
+      timestamp: new Date().toISOString(),
+      type: _type || "unknown",
+      slug: slug?.current || null,
+      receivedKeys: Object.keys(body),
     };
 
     console.log(
