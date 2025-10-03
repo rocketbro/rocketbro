@@ -24,7 +24,8 @@ export async function sanityFetch<QueryResponse>({
 }) {
   return client.fetch<QueryResponse>(query, params, {
     next: {
-      revalidate: false, // SSG - no revalidation during build
+      // Remove revalidate: false to enable on-demand revalidation
+      // Pages will be generated statically but can be revalidated via API
       tags,
     },
   });

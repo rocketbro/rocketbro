@@ -9,7 +9,8 @@ import type {
   SITE_SETTINGS_QUERYResult,
 } from "@/lib/sanity/types";
 
-export const revalidate = false; // SSG - no revalidation
+// Enable on-demand revalidation via API route
+// This allows revalidatePath() and revalidateTag() to work
 
 export default async function Home() {
   const [settings, posts] = await Promise.all([

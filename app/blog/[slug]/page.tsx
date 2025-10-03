@@ -22,7 +22,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = false; // SSG - no revalidation
+// Enable on-demand revalidation via API route
+// This allows revalidatePath() and revalidateTag() to work
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
