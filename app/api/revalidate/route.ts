@@ -1,5 +1,47 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
+import { createHmac } from "crypto";
+
+// Verify Sanity webhook signature
+function isValidSignature(
+  body: string,
+  signature: string,
+  secret: string,
+): boolean {
+  try {
+    // Sanity signature format: "t=timestamp,v1=hash"
+    const signatureParts = signature.split(",");
+    const timestamp = signatureParts
+      .find((part) => part.startsWith("t="))
+      ?.split("=")[1];
+    const hash = signatureParts
+      .find((part) => part.startsWith("v1="))
+      ?.split("=")[1];
+
+    if (!timestamp || !hash) {
+      console.log("❌ Invalid signature format");
+      return false;
+    }
+
+    // Create HMAC signature
+    const signaturePayload = `${timestamp}.${body}`;
+    const expectedHash = createHmac("sha256", secret)
+      .update(signaturePayload)
+      .digest("base64");
+
+    // Compare signatures
+    const isValid = hash === expectedHash;
+    console.log(
+      "🔐 Signature validation:",
+      isValid ? "✅ Valid" : "❌ Invalid",
+    );
+
+    return isValid;
+  } catch (err) {
+    console.error("❌ Error validating signature:", err);
+    return false;
+  }
+}
 
 // GET handler for testing the endpoint
 export async function GET(request: NextRequest) {
@@ -19,44 +61,68 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     console.log("🔔 Revalidation webhook called at:", new Date().toISOString());
-    console.log("📍 Request URL:", request.url);
+
+    // Get the raw body for signature verification
+    const body = await request.text();
+    const signature = request.headers.get("sanity-webhook-signature");
+
+    console.log("🔑 Signature present:", !!signature);
     console.log(
-      "📍 Request headers:",
-      Object.fromEntries(request.headers.entries()),
+      "🔐 Secret configured:",
+      !!process.env.SANITY_REVALIDATE_SECRET,
     );
 
-    // Verify the secret token first
-    const secret = request.nextUrl.searchParams.get("secret");
-    const hasSecret = !!secret;
-    const hasEnvSecret = !!process.env.SANITY_REVALIDATE_SECRET;
-    console.log("🔑 Secret present in request:", hasSecret);
-    console.log("🔐 Secret configured in env:", hasEnvSecret);
+    // Verify signature if secret is configured
+    if (process.env.SANITY_REVALIDATE_SECRET) {
+      if (!signature) {
+        console.log("❌ No signature provided");
+        return NextResponse.json(
+          { message: "Missing signature" },
+          { status: 401 },
+        );
+      }
 
-    if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
-      console.log("❌ Secret mismatch - rejecting request");
-      return NextResponse.json({ message: "Invalid secret" }, { status: 401 });
+      const isValid = isValidSignature(
+        body,
+        signature,
+        process.env.SANITY_REVALIDATE_SECRET,
+      );
+
+      if (!isValid) {
+        console.log("❌ Invalid signature - rejecting request");
+        return NextResponse.json(
+          { message: "Invalid signature" },
+          { status: 401 },
+        );
+      }
+
+      console.log("✅ Signature validated successfully");
+    } else {
+      console.log("⚠️  No secret configured - skipping signature validation");
     }
 
-    console.log("✅ Secret validated successfully");
+    // Parse the JSON body
+    const payload = JSON.parse(body);
+    console.log(
+      "📦 Received webhook payload:",
+      JSON.stringify(payload, null, 2),
+    );
 
-    // Parse the request body
-    const body = await request.json();
-    console.log("📦 Received webhook payload:", JSON.stringify(body, null, 2));
+    // Log Sanity headers for debugging
+    const sanityHeaders = {
+      operation: request.headers.get("sanity-operation"),
+      documentId: request.headers.get("sanity-document-id"),
+      dataset: request.headers.get("sanity-dataset"),
+      projectId: request.headers.get("sanity-project-id"),
+    };
+    console.log("📋 Sanity headers:", sanityHeaders);
 
-    // Sanity webhook payload structure - check multiple possible locations
-    // The payload might be the document itself, or wrapped in different ways
-    const _type = body._type || body.type;
-    const slug = body.slug || body.data?.slug;
+    // Extract document type and slug from payload
+    const _type = payload._type || payload.type;
+    const slug = payload.slug || payload.data?.slug;
 
-    // Log what we extracted
     console.log(`📝 Document type: ${_type || "UNKNOWN"}`);
     console.log(`📝 Slug: ${slug?.current || "N/A"}`);
-
-    // If we don't have a _type, log the entire structure for debugging
-    if (!_type) {
-      console.log("⚠️  No _type found in payload. Full structure:");
-      console.log("Keys:", Object.keys(body));
-    }
 
     // Revalidate based on document type
     switch (_type) {
@@ -123,7 +189,6 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
       type: _type || "unknown",
       slug: slug?.current || null,
-      receivedKeys: Object.keys(body),
     };
 
     console.log(
