@@ -10,6 +10,7 @@ import {
 import { PortableTextRenderer } from "@/components/PortableTextRenderer";
 import { SchemaOrg, generateBlogPostSchema } from "@/components/SchemaOrg";
 import { urlFor } from "@/lib/sanity/image";
+import { Footer } from "@/components/Footer";
 import type {
   POST_BY_SLUG_QUERYResult,
   ALL_POST_SLUGS_QUERYResult,
@@ -270,32 +271,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </Link>
         </div>
 
-        {/* Footer */}
-        <footer className="border-t border-border dark:border-border-dark mt-16">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-sm opacity-70">
-                © {new Date().getFullYear()}{" "}
-                {settings?.siteTitle || "Rocketbro"}. All rights reserved.
-              </p>
-              {settings?.socialLinks && settings.socialLinks.length > 0 && (
-                <div className="flex gap-4">
-                  {settings.socialLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url || ""}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm hover:text-accent dark:hover:text-accent-dark transition-colors"
-                    >
-                      {link.platform}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </footer>
+        <Footer settings={settings} />
       </div>
     </>
   );

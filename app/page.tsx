@@ -4,6 +4,7 @@ import { RECENT_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import { PostCard } from "@/components/PostCard";
 import { PortableTextRenderer } from "@/components/PortableTextRenderer";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";
+import { Footer } from "@/components/Footer";
 import type {
   RECENT_POSTS_QUERYResult,
   SITE_SETTINGS_QUERYResult,
@@ -72,32 +73,7 @@ export default async function Home() {
           </section>
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-border dark:border-border-dark mt-24">
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-sm opacity-70">
-                © {new Date().getFullYear()}{" "}
-                {settings?.siteTitle || "Rocketbro"}. All rights reserved.
-              </p>
-              {settings?.socialLinks && settings.socialLinks.length > 0 && (
-                <div className="flex gap-4">
-                  {settings.socialLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={link.url || ""}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm hover:text-accent dark:hover:text-accent-dark transition-colors"
-                    >
-                      {link.platform}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </footer>
+        <Footer settings={settings} />
       </div>
     </>
   );
