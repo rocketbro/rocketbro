@@ -1,45 +1,45 @@
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { codepenEmbed } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import type { PortableTextContent, IntroTextContent } from "@/lib/sanity/types";
 import { IMAGE_SIZES } from "@/lib/constants";
 
 const components: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
-      <h1 className="text-5xl font-bold mb-6 mt-12">{children}</h1>
+      <h1 className="text-5xl max-w-2xl font-bold mb-6 mt-12">{children}</h1>
     ),
     h2: ({ children }) => (
-      <h2 className="text-4xl font-bold mb-5 mt-10">{children}</h2>
+      <h2 className="text-4xl max-w-2xl font-bold mb-5 mt-10">{children}</h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-3xl font-bold mb-4 mt-8">{children}</h3>
+      <h3 className="text-3xl max-w-2xl font-bold mb-4 mt-8">{children}</h3>
     ),
     h4: ({ children }) => (
-      <h4 className="text-2xl font-bold mb-3 mt-6">{children}</h4>
+      <h4 className="text-2xl max-w-2xl font-bold mb-3 mt-6">{children}</h4>
     ),
-    normal: ({ children }) => <p className="text-2xl mb-6">{children}</p>,
+    normal: ({ children }) => <p className="text-xl md:text-2xl max-w-2xl mb-6">{children}</p>,
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-accent dark:border-accent-dark pl-6 italic my-8 text-2xl">
+      <blockquote className="border-l-4 border-accent dark:border-accent-dark pl-6 italic my-8 text-xl md:text-2xl max-w-2xl">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc list-inside space-y-2 mb-6 ml-4">{children}</ul>
+      <ul className="list-disc list-inside space-y-2 mb-6 ml-4 max-w-2xl">{children}</ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal list-inside space-y-2 mb-6 ml-4">
+      <ol className="list-decimal list-inside space-y-2 mb-6 ml-4 max-w-2xl">
         {children}
       </ol>
     ),
   },
   listItem: {
-    bullet: ({ children }) => <li className="text-2xl">{children}</li>,
-    number: ({ children }) => <li className="text-2xl">{children}</li>,
+    bullet: ({ children }) => <li className="text-xl md:text-2xl">{children}</li>,
+    number: ({ children }) => <li className="text-xl md:text-2xl">{children}</li>,
   },
   marks: {
     strong: ({ children }) => (
@@ -49,7 +49,7 @@ const components: PortableTextComponents = {
     ),
     em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => (
-      <code className="bg-muted dark:bg-muted-dark px-2 py-1 rounded text-lg font-mono">
+      <code className="bg-muted dark:bg-white/10 px-2 py-1 rounded-lg text-sm md:text-lg font-mono">
         {children}
       </code>
     ),
@@ -96,15 +96,17 @@ const components: PortableTextComponents = {
         <div className="my-6 rounded-lg overflow-hidden">
           <SyntaxHighlighter
             language={language}
-            style={vscDarkPlus}
+            style={codepenEmbed}
             customStyle={{
               margin: 0,
               padding: "1.5rem",
-              fontSizeAdjust: "0.65",
               fontSize: "1rem",
               borderRadius: "0.5rem",
+              fontFamily: "var(--font-cascadia)",
+              fontWeight: 300
             }}
-            showLineNumbers={true}
+            codeTagProps={{ style: { fontFamily: "inherit" } }}
+            showLineNumbers={false}
           >
             {value?.code || ""}
           </SyntaxHighlighter>

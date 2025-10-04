@@ -21,6 +21,7 @@
   --font-display: var(--font-wix), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-garamond), ui-serif, Georgia, serif;
   --font-mono: var(--font-ibm), ui-monospace, monospace;
+  --font-cascadia: var(--font-cascadia), ui-monospace, monospace;
 }
 
 /* Base styles */
@@ -63,6 +64,6 @@
   }
 
   .font-mono {
-    font-family: var(--font-mono);
+    font-family: var(--font-cascadia);
   }
 }

@@ -18,73 +18,67 @@ export function PostCard(post: PostCardProps) {
     : "";
 
   return (
-    <article className="group flex flex-col h-full border border-border dark:border-border-dark rounded-lg overflow-hidden hover:border-accent dark:hover:border-accent-dark transition-all duration-300">
-      {mainImage?.asset && (
-        <Link
-          href={`/blog/${slug?.current || ""}`}
-          className="relative aspect-video overflow-hidden"
-        >
-          <Image
-            src={urlFor(mainImage).width(IMAGE_SIZES.POST_CARD.width).height(IMAGE_SIZES.POST_CARD.height).url()}
-            alt={mainImage.alt || title || "Blog post image"}
-            width={IMAGE_SIZES.POST_CARD.width}
-            height={IMAGE_SIZES.POST_CARD.height}
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-          />
-        </Link>
-      )}
-
-      <div className="flex flex-col flex-1 p-6">
-        {categories && categories.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {categories.map((category) => (
-              <span
-                key={category._id}
-                className="text-xs uppercase tracking-wider text-accent dark:text-accent-dark font-mono"
-              >
-                {category.title}
-              </span>
-            ))}
+    <Link href={`/blog/${slug?.current || ""}`} className="block h-full">
+      <article className="group flex flex-col h-full border border-border dark:border-border-dark rounded-lg overflow-hidden hover:border-accent dark:hover:border-accent-dark transition-all duration-300 cursor-pointer">
+        {mainImage?.asset && (
+          <div className="relative aspect-video overflow-hidden">
+            <Image
+              src={urlFor(mainImage).width(IMAGE_SIZES.POST_CARD.width).height(IMAGE_SIZES.POST_CARD.height).url()}
+              alt={mainImage.alt || title || "Blog post image"}
+              width={IMAGE_SIZES.POST_CARD.width}
+              height={IMAGE_SIZES.POST_CARD.height}
+              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+            />
           </div>
         )}
 
-        <Link
-          href={`/blog/${slug?.current || ""}`}
-          className="group-hover:text-accent dark:group-hover:text-accent-dark transition-colors"
-        >
-          <h3 className="text-2xl font-bold mb-3 line-clamp-2">
+        <div className="flex flex-col flex-1 p-6">
+          {categories && categories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {categories.map((category) => (
+                <span
+                  key={category._id}
+                  className="text-xs uppercase tracking-wider text-accent dark:text-accent-dark font-mono"
+                >
+                  {category.title}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <h3 className="text-2xl font-bold mb-3 line-clamp-2 group-hover:text-accent dark:group-hover:text-accent-dark transition-colors">
             {title || "Untitled"}
           </h3>
-        </Link>
 
-        {excerpt && (
-          <p className="text-foreground dark:text-foreground-dark opacity-80 mb-4 line-clamp-3 flex-1 text-xl">
-            {excerpt}
-          </p>
-        )}
-
-        <div className="flex items-center gap-3 mt-auto pt-4 border-t border-border dark:border-border-dark">
-          {author?.image?.asset && (
-            <Image
-              src={urlFor(author.image).width(IMAGE_SIZES.AVATAR_SMALL.width).height(IMAGE_SIZES.AVATAR_SMALL.height).url()}
-              alt={author.name || "Author"}
-              width={IMAGE_SIZES.AVATAR_SMALL.width}
-              height={IMAGE_SIZES.AVATAR_SMALL.height}
-              className="rounded-full"
-            />
+          {excerpt && (
+            <p className="text-foreground dark:text-foreground-dark opacity-80 mb-4 line-clamp-3 flex-1 text-xl">
+              {excerpt}
+            </p>
           )}
-          <div className="flex flex-col">
-            {author?.name && (
-              <span className="text-md font-medium">{author.name}</span>
+
+          <div className="flex items-center gap-3 mt-auto pt-4 border-t border-border dark:border-border-dark">
+            {author?.image?.asset && (
+              <Image
+                src={urlFor(author.image).width(IMAGE_SIZES.AVATAR_SMALL.width).height(IMAGE_SIZES.AVATAR_SMALL.height).url()}
+                alt={author.name || "Author"}
+                width={IMAGE_SIZES.AVATAR_SMALL.width}
+                height={IMAGE_SIZES.AVATAR_SMALL.height}
+                className="rounded-full"
+              />
             )}
-            {formattedDate && (
-              <time className="text-sm opacity-70" dateTime={publishedAt || ""}>
-                {formattedDate}
-              </time>
-            )}
+            <div className="flex flex-col">
+              {author?.name && (
+                <span className="text-md font-medium">{author.name}</span>
+              )}
+              {formattedDate && (
+                <time className="text-sm opacity-70" dateTime={publishedAt || ""}>
+                  {formattedDate}
+                </time>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }

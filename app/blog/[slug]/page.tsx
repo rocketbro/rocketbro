@@ -149,11 +149,11 @@ export default async function BlogPostPage({ params }: PageProps) {
         <article className="max-w-4xl mx-auto px-6 py-16">
           {/* Categories */}
           {post.categories && post.categories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-2 mb-6 justify-center">
               {post.categories.map((category) => (
                 <span
                   key={category._id}
-                  className="text-xs uppercase tracking-wider text-accent dark:text-accent-dark font-mono"
+                  className="text-md uppercase tracking-wider text-accent dark:text-accent-dark font-mono"
                 >
                   {category.title}
                 </span>
@@ -162,19 +162,19 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
 
           {/* Title */}
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-center">
             {post.title || "Untitled"}
           </h1>
 
           {/* Excerpt */}
-          {post.excerpt && (
-            <p className="text-xl opacity-80 mb-8 leading-relaxed">
+          {/*{post.excerpt && (
+            <p className="text-2xl max-w-2xl mx-auto opacity-80 mb-8 leading-relaxed text-center">
               {post.excerpt}
             </p>
-          )}
+          )}*/}
 
           {/* Meta Info */}
-          <div className="flex items-center gap-4 mb-12 pb-8 border-b border-border dark:border-border-dark">
+          <div className="flex-col items-center justify-center gap-4 mb-12 pb-8">
             {post.author?.image?.asset && (
               <Image
                 src={urlFor(post.author.image).width(IMAGE_SIZES.AVATAR_MEDIUM.width).height(IMAGE_SIZES.AVATAR_MEDIUM.height).url()}
@@ -184,22 +184,49 @@ export default async function BlogPostPage({ params }: PageProps) {
                 className="rounded-full"
               />
             )}
-            <div>
+            <div className="flex flex-col mx-auto items-center">
               {post.author?.name && (
-                <p className="font-medium text-lg">{post.author.name}</p>
+                <p className="font-medium text-2xl">{post.author.name}</p>
               )}
               <time
-                className="text-sm opacity-70"
+                className="text-xl opacity-70"
                 dateTime={post.publishedAt || ""}
               >
                 {formattedDate}
               </time>
             </div>
+            
+            {/* Back to Home */}
+            <div className="px-6 pt-6 flex justify-center">
+              <Link
+                href="/"
+                className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                  />
+                </svg>
+                Back to home
+              </Link>
+            </div>
           </div>
+          
+          
+          
 
           {/* Featured Image */}
           {post.mainImage?.asset && (
-            <figure className="mb-12">
+            <figure className="mb-12 flex flex-col items-center">
               <Image
                 src={urlFor(post.mainImage).width(IMAGE_SIZES.POST_FEATURED.width).height(IMAGE_SIZES.POST_FEATURED.height).url()}
                 alt={post.mainImage.alt || post.title || "Blog post image"}
@@ -217,13 +244,13 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
 
           {/* Content */}
-          <div className="prose prose-lg max-w-none">
+          <div className="prose prose-lg max-w-2xl mx-auto">
             {post.body && <PortableTextRenderer value={post.body} />}
           </div>
 
           {/* Author Bio */}
           {post.author?.bio && (
-            <div className="mt-16 pt-8 border-t border-border dark:border-border-dark">
+            <div className="mt-16 pt-8 border-t border-border dark:border-border-dark max-w-2xl mx-auto">
               <div className="flex gap-6 items-start">
                 {post.author.image?.asset && (
                   <Image
@@ -238,7 +265,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   <h3 className="text-xl font-bold mb-2">
                     About {post.author.name || "the author"}
                   </h3>
-                  <p className="opacity-80 leading-relaxed">
+                  <p className="opacity-80 text-xl leading-relaxed">
                     {post.author.bio}
                   </p>
                 </div>
@@ -248,10 +275,10 @@ export default async function BlogPostPage({ params }: PageProps) {
         </article>
 
         {/* Back to Home */}
-        <div className="max-w-4xl mx-auto px-6 pb-16">
+        <div className="px-6 pt-6 flex justify-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark transition-colors"
+            className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
