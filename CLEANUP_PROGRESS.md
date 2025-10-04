@@ -23,33 +23,15 @@
 - Added null check in PortableTextRenderer
 - All TypeScript checks passing with no errors
 
-## Remaining Cleanup Tasks
-
 ### 4. Create Constants File for Image Dimensions
-**Priority: Medium** | **Effort: Low**
+- Created `lib/constants.ts` with `IMAGE_SIZES` object
+- Replaced all hardcoded image dimensions across 3 files
+- Updated OG images (1200x630), post cards (800x450), featured images (1200x675)
+- Updated avatars: large (96x96), medium (64x64), small (40x40)
+- All images now use semantic named constants
+- TypeScript compilation passing
 
-Currently image dimensions are hardcoded throughout:
-- `urlFor(image).width(1200).height(630)` - OG images
-- `urlFor(image).width(800).height(450)` - Post card images
-- `urlFor(image).width(64).height(64)` - Author avatars
-- `urlFor(image).width(40).height(40)` - Small avatars
-
-**Action Items:**
-- Create `lib/constants.ts` file
-- Define `IMAGE_SIZES` constant object
-- Replace all magic numbers with named constants
-
-**Suggested Structure:**
-```typescript
-export const IMAGE_SIZES = {
-  OG: { width: 1200, height: 630 },
-  POST_CARD: { width: 800, height: 450 },
-  POST_FEATURED: { width: 1200, height: 675 },
-  AVATAR_LARGE: { width: 96, height: 96 },
-  AVATAR_MEDIUM: { width: 64, height: 64 },
-  AVATAR_SMALL: { width: 40, height: 40 },
-} as const;
-```
+## Remaining Cleanup Tasks
 
 ### 5. Add Error Boundary
 **Priority: Medium** | **Effort: Medium**
@@ -97,10 +79,12 @@ Currently `LayoutContent` wraps children, but pages have embedded nav/footer. Th
 ## Files Modified in This Session
 - ✅ `components/Footer.tsx` (created)
 - ✅ `app/page.tsx` (updated to use Footer component, removed any casts)
-- ✅ `app/blog/[slug]/page.tsx` (updated to use Footer component, removed any casts)
+- ✅ `app/blog/[slug]/page.tsx` (updated to use Footer component, removed any casts, added image constants)
 - ✅ `app/api/revalidate/route.ts` (reduced logging verbosity)
 - ✅ `lib/sanity/types.ts` (added Portable Text type aliases)
-- ✅ `components/PortableTextRenderer.tsx` (properly typed, removed any usage)
+- ✅ `components/PortableTextRenderer.tsx` (properly typed, removed any usage, added image constants)
+- ✅ `lib/constants.ts` (created with IMAGE_SIZES)
+- ✅ `components/PostCard.tsx` (added image constants)
 
 ## Next Session Recommendations
-Start with **Task #4 (Constants File)** as it's a quick win that improves maintainability and removes magic numbers throughout the codebase.
+Consider **Task #5 (Add Error Boundary)** for better error handling, or **Task #6 (Review LayoutContent)** to ensure consistent layout structure.

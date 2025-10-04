@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
 import type { RECENT_POSTS_QUERYResult } from "@/lib/sanity/types";
+import { IMAGE_SIZES } from "@/lib/constants";
 
 type PostCardProps = RECENT_POSTS_QUERYResult[0];
 
@@ -24,10 +25,10 @@ export function PostCard(post: PostCardProps) {
           className="relative aspect-video overflow-hidden"
         >
           <Image
-            src={urlFor(mainImage).width(800).height(450).url()}
+            src={urlFor(mainImage).width(IMAGE_SIZES.POST_CARD.width).height(IMAGE_SIZES.POST_CARD.height).url()}
             alt={mainImage.alt || title || "Blog post image"}
-            width={800}
-            height={450}
+            width={IMAGE_SIZES.POST_CARD.width}
+            height={IMAGE_SIZES.POST_CARD.height}
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
           />
         </Link>
@@ -65,10 +66,10 @@ export function PostCard(post: PostCardProps) {
         <div className="flex items-center gap-3 mt-auto pt-4 border-t border-border dark:border-border-dark">
           {author?.image?.asset && (
             <Image
-              src={urlFor(author.image).width(40).height(40).url()}
+              src={urlFor(author.image).width(IMAGE_SIZES.AVATAR_SMALL.width).height(IMAGE_SIZES.AVATAR_SMALL.height).url()}
               alt={author.name || "Author"}
-              width={40}
-              height={40}
+              width={IMAGE_SIZES.AVATAR_SMALL.width}
+              height={IMAGE_SIZES.AVATAR_SMALL.height}
               className="rounded-full"
             />
           )}

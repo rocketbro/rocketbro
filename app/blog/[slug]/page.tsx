@@ -10,6 +10,7 @@ import { PortableTextRenderer } from "@/components/PortableTextRenderer";
 import { SchemaOrg, generateBlogPostSchema } from "@/components/SchemaOrg";
 import { urlFor } from "@/lib/sanity/image";
 import { Footer } from "@/components/Footer";
+import { IMAGE_SIZES } from "@/lib/constants";
 import type {
   POST_BY_SLUG_QUERYResult,
   ALL_POST_SLUGS_QUERYResult,
@@ -57,7 +58,7 @@ export async function generateMetadata({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const postUrl = `${siteUrl}/blog/${slug}`;
   const imageUrl = post.mainImage?.asset
-    ? urlFor(post.mainImage).width(1200).height(630).url()
+    ? urlFor(post.mainImage).width(IMAGE_SIZES.OG.width).height(IMAGE_SIZES.OG.height).url()
     : undefined;
 
   return {
@@ -112,7 +113,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const postUrl = `${siteUrl}/blog/${slug}`;
   const imageUrl = post.mainImage?.asset
-    ? urlFor(post.mainImage).width(1200).height(630).url()
+    ? urlFor(post.mainImage).width(IMAGE_SIZES.OG.width).height(IMAGE_SIZES.OG.height).url()
     : undefined;
 
   const formattedDate = new Date(post.publishedAt || "").toLocaleDateString(
@@ -176,10 +177,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="flex items-center gap-4 mb-12 pb-8 border-b border-border dark:border-border-dark">
             {post.author?.image?.asset && (
               <Image
-                src={urlFor(post.author.image).width(64).height(64).url()}
+                src={urlFor(post.author.image).width(IMAGE_SIZES.AVATAR_MEDIUM.width).height(IMAGE_SIZES.AVATAR_MEDIUM.height).url()}
                 alt={post.author.name || "Author"}
-                width={64}
-                height={64}
+                width={IMAGE_SIZES.AVATAR_MEDIUM.width}
+                height={IMAGE_SIZES.AVATAR_MEDIUM.height}
                 className="rounded-full"
               />
             )}
@@ -200,10 +201,10 @@ export default async function BlogPostPage({ params }: PageProps) {
           {post.mainImage?.asset && (
             <figure className="mb-12">
               <Image
-                src={urlFor(post.mainImage).width(1200).height(675).url()}
+                src={urlFor(post.mainImage).width(IMAGE_SIZES.POST_FEATURED.width).height(IMAGE_SIZES.POST_FEATURED.height).url()}
                 alt={post.mainImage.alt || post.title || "Blog post image"}
-                width={1200}
-                height={675}
+                width={IMAGE_SIZES.POST_FEATURED.width}
+                height={IMAGE_SIZES.POST_FEATURED.height}
                 className="rounded-lg w-full h-auto"
                 priority
               />
@@ -226,10 +227,10 @@ export default async function BlogPostPage({ params }: PageProps) {
               <div className="flex gap-6 items-start">
                 {post.author.image?.asset && (
                   <Image
-                    src={urlFor(post.author.image).width(96).height(96).url()}
+                    src={urlFor(post.author.image).width(IMAGE_SIZES.AVATAR_LARGE.width).height(IMAGE_SIZES.AVATAR_LARGE.height).url()}
                     alt={post.author.name || "Author"}
-                    width={96}
-                    height={96}
+                    width={IMAGE_SIZES.AVATAR_LARGE.width}
+                    height={IMAGE_SIZES.AVATAR_LARGE.height}
                     className="rounded-full flex-shrink-0"
                   />
                 )}

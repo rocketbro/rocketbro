@@ -4,6 +4,7 @@ import { urlFor } from "@/lib/sanity/image";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { PortableTextContent, IntroTextContent } from "@/lib/sanity/types";
+import { IMAGE_SIZES } from "@/lib/constants";
 
 const components: PortableTextComponents = {
   block: {
@@ -75,10 +76,10 @@ const components: PortableTextComponents = {
       return (
         <figure className="my-8">
           <Image
-            src={urlFor(value).width(1200).url()}
+            src={urlFor(value).width(IMAGE_SIZES.INLINE_IMAGE.width).url()}
             alt={value.alt || "Blog post image"}
-            width={1200}
-            height={675}
+            width={IMAGE_SIZES.INLINE_IMAGE.width}
+            height={IMAGE_SIZES.INLINE_IMAGE.height}
             className="rounded-lg w-full h-auto"
           />
           {value.alt && (
