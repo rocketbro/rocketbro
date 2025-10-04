@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { sanityFetch } from "@/lib/sanity/client";
@@ -218,7 +217,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {/* Content */}
           <div className="prose prose-lg max-w-none">
-            {post.body && <PortableTextRenderer value={post.body as any} />}
+            {post.body && <PortableTextRenderer value={post.body} />}
           </div>
 
           {/* Author Bio */}

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { sanityFetch } from "@/lib/sanity/client";
 import { RECENT_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import { PostCard } from "@/components/PostCard";
@@ -48,7 +47,7 @@ export default async function Home() {
               </h2>
               {settings?.introText && settings.introText.length > 0 && (
                 <div className="text-xl leading-relaxed opacity-90">
-                  <PortableTextRenderer value={settings.introText as any} />
+                  <PortableTextRenderer value={settings.introText} />
                 </div>
               )}
             </div>

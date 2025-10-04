@@ -614,6 +614,10 @@ export type RELATED_POSTS_QUERYResult = Array<{
   } | null;
 }>;
 
+// Portable Text type aliases for convenience
+export type PortableTextContent = NonNullable<POST_BY_SLUG_QUERYResult>["body"];
+export type IntroTextContent = NonNullable<SITE_SETTINGS_QUERYResult>["introText"];
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {

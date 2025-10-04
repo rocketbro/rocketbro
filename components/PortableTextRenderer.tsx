@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import type { PortableTextContent, IntroTextContent } from "@/lib/sanity/types";
 
 const components: PortableTextComponents = {
   block: {
@@ -114,9 +114,10 @@ const components: PortableTextComponents = {
 };
 
 interface PortableTextRendererProps {
-  value: any;
+  value: PortableTextContent | IntroTextContent;
 }
 
 export function PortableTextRenderer({ value }: PortableTextRendererProps) {
+  if (!value) return null;
   return <PortableText value={value} components={components} />;
 }
