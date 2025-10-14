@@ -146,10 +146,10 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       <div className="min-h-screen bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark">
         {/* Article */}
-        <article className="max-w-4xl mx-auto px-6 py-16">
+        <article className="max-w-4xl mx-auto px-6 py-12 md:py-16">
           {/* Categories */}
           {post.categories && post.categories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-6 justify-center">
+            <div className="flex flex-wrap gap-2 mb-4 md:mb-6 justify-center">
               {post.categories.map((category) => (
                 <span
                   key={category._id}
@@ -162,7 +162,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}
 
           {/* Title */}
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-center">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight text-center">
             {post.title || "Untitled"}
           </h1>
 
@@ -174,17 +174,17 @@ export default async function BlogPostPage({ params }: PageProps) {
           )}*/}
 
           {/* Meta Info */}
-          <div className="flex-col items-center justify-center gap-4 mb-12 pb-8">
+          <div className="flex items-center justify-center gap-4 mb-6">
             {post.author?.image?.asset && (
               <Image
-                src={urlFor(post.author.image).width(IMAGE_SIZES.AVATAR_MEDIUM.width).height(IMAGE_SIZES.AVATAR_MEDIUM.height).url()}
+                src={urlFor(post.author.image).width(IMAGE_SIZES.AVATAR_SMALL.width).height(IMAGE_SIZES.AVATAR_SMALL.height).url()}
                 alt={post.author.name || "Author"}
-                width={IMAGE_SIZES.AVATAR_MEDIUM.width}
-                height={IMAGE_SIZES.AVATAR_MEDIUM.height}
+                width={IMAGE_SIZES.AVATAR_SMALL.width}
+                height={IMAGE_SIZES.AVATAR_SMALL.height}
                 className="rounded-full"
               />
             )}
-            <div className="flex flex-col mx-auto items-center">
+            <div className="flex flex-col items-start">
               {post.author?.name && (
                 <p className="font-medium text-2xl">{post.author.name}</p>
               )}
@@ -195,44 +195,44 @@ export default async function BlogPostPage({ params }: PageProps) {
                 {formattedDate}
               </time>
             </div>
-            
-            {/* Back to Home */}
-            <div className="px-6 pt-6 flex justify-center">
-              <Link
-                href="/"
-                className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
-                  />
-                </svg>
-                Back to home
-              </Link>
-            </div>
           </div>
-          
-          
+
+          {/* Back to Home */}
+          <div className="flex justify-center mb-8 md:mb-12 pb-4 md:pb-8">
+            <Link
+              href="/"
+              className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                />
+              </svg>
+              Back to home
+            </Link>
+          </div>
+
+
           
 
           {/* Featured Image */}
           {post.mainImage?.asset && (
-            <figure className="mb-12 flex flex-col items-center">
+            <figure className="mb-6 md:mb-12 flex flex-col items-center">
               <Image
                 src={urlFor(post.mainImage).width(IMAGE_SIZES.POST_FEATURED.width).height(IMAGE_SIZES.POST_FEATURED.height).url()}
                 alt={post.mainImage.alt || post.title || "Blog post image"}
                 width={IMAGE_SIZES.POST_FEATURED.width}
                 height={IMAGE_SIZES.POST_FEATURED.height}
-                className="rounded-lg w-full h-auto"
+                className="rounded-xl w-full h-auto"
                 priority
               />
               {post.mainImage.alt && (
