@@ -15,7 +15,23 @@ export function TopNav({ siteTitle = "Rocketbro" }: TopNavProps) {
         >
           {siteTitle}
         </Link>
-        <ThemeToggle />
+        <div className="flex gap-6 items-center">
+          <nav className="flex gap-6">
+            <Link
+              href="/"
+              className="text-lg hover:text-accent dark:hover:text-accent-dark transition-colors"
+            >
+              blog
+            </Link>
+            <Link
+              href="/links"
+              className="text-lg hover:text-accent dark:hover:text-accent-dark transition-colors"
+            >
+              links
+            </Link>
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
