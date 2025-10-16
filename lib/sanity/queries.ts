@@ -109,3 +109,24 @@ export const RELATED_POSTS_QUERY = defineQuery(`
     }
   }
 `);
+
+// Query for links page
+export const LINKS_QUERY = defineQuery(`
+  *[_type == "links"][0] {
+    _id,
+    title,
+    description,
+    headerImage {
+      asset->,
+      alt
+    },
+    links[] {
+      url,
+      description,
+      image {
+        asset->,
+        alt
+      }
+    }
+  }
+`);

@@ -13,6 +13,47 @@
  */
 
 // Source: schema.json
+export type Links = {
+  _id: string;
+  _type: "links";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  headerImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  links?: Array<{
+    url?: string;
+    description?: string;
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    };
+    _key: string;
+  }>;
+};
+
 export type Settings = {
   _id: string;
   _type: "settings";
@@ -313,7 +354,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = Settings | Post | Category | Author | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = Links | Settings | Post | Category | Author | Code | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ../lib/sanity/queries.ts
 // Variable: RECENT_POSTS_QUERY
@@ -613,10 +654,67 @@ export type RELATED_POSTS_QUERYResult = Array<{
     alt: string | null;
   } | null;
 }>;
-
-// Portable Text type aliases for convenience
-export type PortableTextContent = NonNullable<POST_BY_SLUG_QUERYResult>["body"];
-export type IntroTextContent = NonNullable<SITE_SETTINGS_QUERYResult>["introText"];
+// Variable: LINKS_QUERY
+// Query: *[_type == "links"][0] {    _id,    title,    description,    headerImage {      asset->,      alt    },    links[] {      url,      description,      image {        asset->,        alt      }    }  }
+export type LINKS_QUERYResult = {
+  _id: string;
+  title: string | null;
+  description: string | null;
+  headerImage: {
+    asset: {
+      _id: string;
+      _type: "sanity.imageAsset";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      originalFilename?: string;
+      label?: string;
+      title?: string;
+      description?: string;
+      altText?: string;
+      sha1hash?: string;
+      extension?: string;
+      mimeType?: string;
+      size?: number;
+      assetId?: string;
+      uploadId?: string;
+      path?: string;
+      url?: string;
+      metadata?: SanityImageMetadata;
+      source?: SanityAssetSourceData;
+    } | null;
+    alt: string | null;
+  } | null;
+  links: Array<{
+    url: string | null;
+    description: string | null;
+    image: {
+      asset: {
+        _id: string;
+        _type: "sanity.imageAsset";
+        _createdAt: string;
+        _updatedAt: string;
+        _rev: string;
+        originalFilename?: string;
+        label?: string;
+        title?: string;
+        description?: string;
+        altText?: string;
+        sha1hash?: string;
+        extension?: string;
+        mimeType?: string;
+        size?: number;
+        assetId?: string;
+        uploadId?: string;
+        path?: string;
+        url?: string;
+        metadata?: SanityImageMetadata;
+        source?: SanityAssetSourceData;
+      } | null;
+      alt: string | null;
+    } | null;
+  }> | null;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
@@ -627,5 +725,6 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)] {\n    \"slug\": slug.current\n  }\n": ALL_POST_SLUGS_QUERYResult;
     "\n  *[_type == \"settings\"][0] {\n    siteTitle,\n    siteDescription,\n    introText,\n    socialLinks[] {\n      platform,\n      url\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n": SITE_SETTINGS_QUERYResult;
     "\n  *[_type == \"post\" && slug.current != $slug] | order(publishedAt desc)[0...3] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    mainImage {\n      asset->,\n      alt\n    }\n  }\n": RELATED_POSTS_QUERYResult;
+    "\n  *[_type == \"links\"][0] {\n    _id,\n    title,\n    description,\n    headerImage {\n      asset->,\n      alt\n    },\n    links[] {\n      url,\n      description,\n      image {\n        asset->,\n        alt\n      }\n    }\n  }\n": LINKS_QUERYResult;
   }
 }

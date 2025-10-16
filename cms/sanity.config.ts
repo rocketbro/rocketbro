@@ -22,6 +22,10 @@ export default defineConfig({
               .title('Settings')
               .icon(() => '⚙️')
               .child(S.document().schemaType('settings').documentId('settings')),
+            S.listItem()
+              .title('Links')
+              .icon(() => '🔗')
+              .child(S.document().schemaType('links').documentId('links')),
             S.divider(),
             // Regular document types
             S.listItem()
