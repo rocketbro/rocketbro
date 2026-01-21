@@ -1,1 +1,1 @@
-I make code stuff and talk to language models and love Jesus
+I love Jesus and make code stuff and talk to language models
