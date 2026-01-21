@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`Revalidating tag: ${body._type}${body.slug ? ` (${body.slug})` : ""}`);
-    revalidateTag(body._type);
+    revalidateTag(body._type, "max");
 
     return NextResponse.json({
       status: 200,

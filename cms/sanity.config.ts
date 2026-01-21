@@ -1,5 +1,6 @@
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import type {StructureBuilder} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {codeInput} from '@sanity/code-input'
 import {schemaTypes} from './schemaTypes'
@@ -13,7 +14,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: (S) =>
+      structure: (S: StructureBuilder) =>
         S.list()
           .title('Content')
           .items([
