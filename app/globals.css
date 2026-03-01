@@ -67,3 +67,35 @@
     font-family: var(--font-cascadia);
   }
 }
+
+@keyframes loomRailIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes loomRailOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+}
+
+.loom-rail-enter {
+  animation: loomRailIn 180ms ease-out both;
+}
+
+.loom-rail-exit {
+  animation: loomRailOut 160ms ease-in both;
+}

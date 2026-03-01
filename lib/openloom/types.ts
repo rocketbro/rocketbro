@@ -25,6 +25,7 @@ export interface OpenLoomTree {
 
 export interface OpenLoomFileSummary {
   slug: string;
+  source: "sanity" | "local";
   fileName: string;
   title: string;
   description?: string;
@@ -37,6 +38,7 @@ export interface OpenLoomFileSummary {
 
 export interface OpenLoomFileData {
   slug: string;
+  source: "sanity" | "local";
   fileName: string;
   tree: OpenLoomTree;
 }

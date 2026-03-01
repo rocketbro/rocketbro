@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FiBookmark } from "react-icons/fi";
 import type { OpenLoomTree } from "@/lib/openloom/types";
 import {
   applyNodeToBranch,
@@ -23,11 +24,15 @@ interface ContextMenuState {
   y: number;
 }
 
+const RAIL_EXIT_MS = 170;
+
 export function LoomViewer({ tree }: LoomViewerProps) {
   const [selection, setSelection] = useState<BranchSelectionMap>(() =>
     buildInitialBranchSelection(tree),
   );
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
+  const [closingNodeId, setClosingNodeId] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
 
@@ -39,6 +44,14 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     return () => {
       window.removeEventListener("click", closeMenu);
       window.removeEventListener("scroll", closeMenu);
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        window.clearTimeout(closeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -60,7 +73,24 @@ export function LoomViewer({ tree }: LoomViewerProps) {
       return;
     }
 
-    setExpandedNodeId((previous) => (previous === nodeId ? null : nodeId));
+    if (closeTimeoutRef.current) {
+      window.clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+
+    if (expandedNodeId === nodeId) {
+      setClosingNodeId(nodeId);
+      closeTimeoutRef.current = window.setTimeout(() => {
+        setExpandedNodeId(null);
+        setClosingNodeId(null);
+        closeTimeoutRef.current = null;
+      }, RAIL_EXIT_MS);
+      setContextMenu(null);
+      return;
+    }
+
+    setClosingNodeId(null);
+    setExpandedNodeId(nodeId);
     setContextMenu(null);
   };
 
@@ -98,9 +128,10 @@ export function LoomViewer({ tree }: LoomViewerProps) {
         <button
           type="button"
           onClick={() => setShowBookmarks((previous) => !previous)}
-          className="text-lg font-mono opacity-80 hover:opacity-100 transition-opacity"
+          className="inline-flex items-center gap-2 text-lg font-mono opacity-80 hover:opacity-100 transition-opacity"
         >
-          Bookmarks ({bookmarkedNodes.length})
+          <FiBookmark className="h-4 w-4" />
+          <span>Bookmarks ({bookmarkedNodes.length})</span>
         </button>
 
         {showBookmarks && (
@@ -154,6 +185,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
                   selection={selection}
                   selectedChildId={selection[node.id] ?? node.rememberedChildId ?? undefined}
                   onSelect={(childId) => switchToContinuation(node.id, childId)}
+                  isClosing={closingNodeId === node.id}
                 />
               )}
             </div>

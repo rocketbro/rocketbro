@@ -1,5 +1,6 @@
 "use client";
 
+import { FiBookmark } from "react-icons/fi";
 import type { OpenLoomTree } from "@/lib/openloom/types";
 import type { BranchSelectionMap } from "@/lib/openloom/traversal";
 import { getContinuationDepth } from "@/lib/openloom/traversal";
@@ -11,6 +12,7 @@ interface ContinuationRailProps {
   selection: BranchSelectionMap;
   selectedChildId?: string;
   onSelect: (childId: string) => void;
+  isClosing?: boolean;
 }
 
 function previewText(text: string) {
@@ -25,9 +27,14 @@ export function ContinuationRail({
   selection,
   selectedChildId,
   onSelect,
+  isClosing = false,
 }: ContinuationRailProps) {
   return (
-    <div className="mt-3 rounded-2xl border border-border/70 dark:border-border-dark/70 p-4">
+    <div
+      className={`mt-3 rounded-2xl border border-border/70 dark:border-border-dark/70 p-4 transform-gpu ${
+        isClosing ? "loom-rail-exit" : "loom-rail-enter"
+      }`}
+    >
       <div className="mb-3 text-sm font-mono opacity-70">
         Continuations from this node
       </div>
@@ -57,7 +64,7 @@ export function ContinuationRail({
                 <div className="truncate opacity-80">{child.modelId || child.author}</div>
                 <div className="flex items-center gap-2">
                   {isCurrent && <span className="text-[#2f6d3b]">●</span>}
-                  {child.isBookmarked && <span>★</span>}
+                  {child.isBookmarked && <FiBookmark className="h-4 w-4" />}
                   <span>[{depth}]</span>
                 </div>
               </div>

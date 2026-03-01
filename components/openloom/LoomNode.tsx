@@ -46,7 +46,7 @@ export function LoomNode({
       <div className={isUser ? "flex justify-end" : "w-full"}>
         <article
           className={isUser
-            ? "max-w-3xl rounded-3xl bg-muted/50 dark:bg-white/10 px-5 py-4"
+            ? "w-full max-w-2xl rounded-3xl bg-muted/50 dark:bg-white/10 px-5 py-4"
             : "w-full"}
         >
           <LoomNodeContent text={node.text} />
@@ -73,30 +73,31 @@ export function LoomNode({
             )}
           </div>
 
-          <div className="mt-2">
+          <div className="mt-2 flex items-center gap-2 text-sm font-mono opacity-75">
             <button
               type="button"
               onClick={copyNodeText}
-              className="inline-flex items-center gap-2 text-sm font-mono opacity-75 hover:opacity-100 transition-opacity"
+              className="inline-flex items-center gap-2 hover:opacity-100 transition-opacity"
             >
               {copied ? <FiCheck className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
               <span>{copied ? "Copied" : "Copy"}</span>
             </button>
+
+            {continuationCount > 1 && (
+              <>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={onOpenContinuations}
+                  className="px-2 hover:opacity-100 transition-opacity"
+                >
+                  Continuations: {continuationCount}
+                </button>
+              </>
+            )}
           </div>
         </article>
       </div>
-
-      {continuationCount > 1 && (
-        <div className={isUser ? "mt-4 flex justify-end" : "mt-4"}>
-          <button
-            type="button"
-            onClick={onOpenContinuations}
-            className="px-2 text-sm font-mono italic opacity-75 hover:opacity-100 transition-opacity"
-          >
-            Continuations: {continuationCount}
-          </button>
-        </div>
-      )}
     </section>
   );
 }

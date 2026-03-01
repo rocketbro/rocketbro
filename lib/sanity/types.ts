@@ -13,6 +13,35 @@
  */
 
 // Source: schema.json
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
+export type Loom = {
+  _id: string;
+  _type: "loom";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  openLoomFile?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type SanityImageAssetReference = {
   _ref: string;
   _type: "reference";
@@ -197,12 +226,6 @@ export type Post = {
   };
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type Category = {
   _id: string;
   _type: "category";
@@ -339,6 +362,9 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
+  | SanityFileAssetReference
+  | Loom
+  | Slug
   | SanityImageAssetReference
   | Links
   | SanityImageCrop
@@ -347,7 +373,6 @@ export type AllSanitySchemaTypes =
   | AuthorReference
   | CategoryReference
   | Post
-  | Slug
   | Category
   | Author
   | Code
@@ -731,6 +756,47 @@ export type LINKS_QUERY_RESULT = {
   }> | null;
 } | null;
 
+// Source: ../lib/sanity/queries.ts
+// Variable: LOOMS_QUERY
+// Query: *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {    _id,    _updatedAt,    title,    slug,    description,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
+export type LOOMS_QUERY_RESULT = Array<{
+  _id: string;
+  _updatedAt: string;
+  title: string | null;
+  slug: Slug | null;
+  description: string | null;
+  openLoomFile: {
+    asset: {
+      url: string | null;
+      originalFilename: string | null;
+    } | null;
+  } | null;
+}>;
+
+// Source: ../lib/sanity/queries.ts
+// Variable: LOOM_BY_SLUG_QUERY
+// Query: *[_type == "loom" && slug.current == $slug][0] {    _id,    _updatedAt,    title,    slug,    description,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
+export type LOOM_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  _updatedAt: string;
+  title: string | null;
+  slug: Slug | null;
+  description: string | null;
+  openLoomFile: {
+    asset: {
+      url: string | null;
+      originalFilename: string | null;
+    } | null;
+  } | null;
+} | null;
+
+// Source: ../lib/sanity/queries.ts
+// Variable: ALL_LOOM_SLUGS_QUERY
+// Query: *[_type == "loom" && defined(slug.current)] {    "slug": slug.current  }
+export type ALL_LOOM_SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -741,5 +807,8 @@ declare module "@sanity/client" {
     '\n  *[_type == "settings"][0] {\n    siteTitle,\n    siteDescription,\n    introText,\n    socialLinks[] {\n      platform,\n      url\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...3] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    mainImage {\n      asset->,\n      alt\n    }\n  }\n': RELATED_POSTS_QUERY_RESULT;
     '\n  *[_type == "links"][0] {\n    _id,\n    title,\n    description,\n    headerImage {\n      asset->,\n      alt\n    },\n    links[] {\n      url,\n      description,\n      image {\n        asset->,\n        alt\n      }\n    }\n  }\n': LINKS_QUERY_RESULT;
+    '\n  *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOMS_QUERY_RESULT;
+    '\n  *[_type == "loom" && slug.current == $slug][0] {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOM_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "loom" && defined(slug.current)] {\n    "slug": slug.current\n  }\n': ALL_LOOM_SLUGS_QUERY_RESULT;
   }
 }

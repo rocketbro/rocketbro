@@ -130,3 +130,44 @@ export const LINKS_QUERY = defineQuery(`
     }
   }
 `);
+
+// Query for all looms
+export const LOOMS_QUERY = defineQuery(`
+  *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {
+    _id,
+    _updatedAt,
+    title,
+    slug,
+    description,
+    openLoomFile {
+      asset-> {
+        url,
+        originalFilename
+      }
+    }
+  }
+`);
+
+// Query for one loom by slug
+export const LOOM_BY_SLUG_QUERY = defineQuery(`
+  *[_type == "loom" && slug.current == $slug][0] {
+    _id,
+    _updatedAt,
+    title,
+    slug,
+    description,
+    openLoomFile {
+      asset-> {
+        url,
+        originalFilename
+      }
+    }
+  }
+`);
+
+// Query for loom slugs
+export const ALL_LOOM_SLUGS_QUERY = defineQuery(`
+  *[_type == "loom" && defined(slug.current)] {
+    "slug": slug.current
+  }
+`);

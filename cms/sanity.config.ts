@@ -34,6 +34,10 @@ export default defineConfig({
               .icon(() => '📝')
               .child(S.documentTypeList('post').title('Posts')),
             S.listItem()
+              .title('Looms')
+              .icon(() => '🧵')
+              .child(S.documentTypeList('loom').title('Looms')),
+            S.listItem()
               .title('Authors')
               .icon(() => '👤')
               .child(S.documentTypeList('author').title('Authors')),

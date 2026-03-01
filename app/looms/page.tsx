@@ -50,7 +50,7 @@ export default async function LoomsPage() {
           ) : (
             <div className="text-center py-16 border border-dashed border-border dark:border-border-dark rounded-lg">
               <p className="text-lg opacity-70">
-                No OpenLoom files found in `lib/openloom` yet.
+                No OpenLoom files found in Sanity or `lib/openloom` yet.
               </p>
             </div>
           )}

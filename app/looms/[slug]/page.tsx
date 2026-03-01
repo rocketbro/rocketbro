@@ -13,6 +13,8 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   const looms = await listOpenLoomSummaries();
   return looms.map((loom) => ({ slug: loom.slug }));
@@ -71,10 +73,10 @@ export default async function LoomPage({ params }: PageProps) {
             </Link>
           </div>
 
-          <header className="mb-10 max-w-4xl">
+          <header className="mb-10 max-w-4xl text-center">
             <h1 className="text-5xl font-bold mb-3">{loom.tree.title || "Untitled Loom"}</h1>
             {loom.tree.description && (
-              <p className="text-2xl opacity-80 whitespace-pre-wrap">
+              <p className="text-2xl opacity-80 whitespace-pre-wrap text-left">
                 {loom.tree.description}
               </p>
             )}
