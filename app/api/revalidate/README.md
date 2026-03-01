@@ -14,10 +14,11 @@ This API route handles on-demand revalidation of cached content when Sanity CMS 
 Make sure you have the following environment variable set:
 
 ```env
-NEXT_PUBLIC_SANITY_HOOK_SECRET=your_webhook_secret_here
+SANITY_WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
 This should match the secret configured in your Sanity webhook settings.
+For backward compatibility, the route also reads `NEXT_PUBLIC_SANITY_WEBHOOK_SECRET`, but this is not recommended for new setups.
 
 ## Sanity Webhook Configuration
 
@@ -26,7 +27,7 @@ Your webhook should be configured with:
 - **URL**: `https://YOUR_DOMAIN/api/revalidate`
 - **Trigger on**: Create, Update, Delete
 - **HTTP Method**: POST
-- **Secret**: Same as `NEXT_PUBLIC_SANITY_HOOK_SECRET`
+- **Secret**: Same as `SANITY_WEBHOOK_SECRET`
 - **Projections**: `{_type, "slug": slug.current}`
 
 ## Usage in Your App

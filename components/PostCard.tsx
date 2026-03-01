@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
-import type { RECENT_POSTS_QUERYResult } from "@/lib/sanity/types";
+import type { RECENT_POSTS_QUERY_RESULT } from "@/lib/sanity/types";
 import { IMAGE_SIZES } from "@/lib/constants";
 
-type PostCardProps = RECENT_POSTS_QUERYResult[0];
+type PostCardProps = RECENT_POSTS_QUERY_RESULT[0];
 
 export function PostCard(post: PostCardProps) {
   const { title, slug, excerpt, publishedAt, mainImage, author, categories } =

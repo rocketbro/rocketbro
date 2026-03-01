@@ -3,18 +3,29 @@ import { type NextRequest, NextResponse } from "next/server";
 import { parseBody } from "next-sanity/webhook";
 
 export async function GET() {
+  const webhookSecret =
+    process.env.SANITY_WEBHOOK_SECRET ||
+    process.env.NEXT_PUBLIC_SANITY_WEBHOOK_SECRET;
+
   return NextResponse.json({
     status: "ok",
     message: "Revalidation API is running",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    secretConfigured: !!process.env.NEXT_PUBLIC_SANITY_WEBHOOK_SECRET,
+    secretConfigured: !!webhookSecret,
   });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const envSecret = process.env.NEXT_PUBLIC_SANITY_WEBHOOK_SECRET;
+    const envSecret =
+      process.env.SANITY_WEBHOOK_SECRET ||
+      process.env.NEXT_PUBLIC_SANITY_WEBHOOK_SECRET;
+
+    if (!envSecret) {
+      console.error("Webhook secret not configured");
+      return new Response("Webhook secret not configured", { status: 500 });
+    }
 
     const { body, isValidSignature } = await parseBody<{
       _type: string;

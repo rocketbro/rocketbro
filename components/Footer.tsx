@@ -1,7 +1,7 @@
-import type { SITE_SETTINGS_QUERYResult } from "@/lib/sanity/types";
+import type { SITE_SETTINGS_QUERY_RESULT } from "@/lib/sanity/types";
 
 interface FooterProps {
-  settings: SITE_SETTINGS_QUERYResult;
+  settings: SITE_SETTINGS_QUERY_RESULT;
 }
 
 export function Footer({ settings }: FooterProps) {

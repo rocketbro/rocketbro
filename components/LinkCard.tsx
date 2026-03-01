@@ -5,32 +5,33 @@ import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
 import { IMAGE_SIZES } from "@/lib/constants";
 import { useState } from "react";
+import type { LINKS_QUERY_RESULT } from "@/lib/sanity/types";
 
-interface LinkData {
+type LinkItem = NonNullable<NonNullable<LINKS_QUERY_RESULT>["links"]>[number];
+
+interface LinkCardProps {
   url: string;
   description?: string;
-  image?: {
-    asset?: {
-      _ref?: string;
-      _type?: string;
-      url?: string;
-    };
-    alt?: string;
-  };
+  image?: LinkItem["image"];
 }
 
-type LinkCardProps = LinkData;
+function getDomain(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
 
 export function LinkCard({ url, description, image }: LinkCardProps) {
   const [imageError, setImageError] = useState(false);
-  const domain = new URL(url).hostname.replace("www.", "");
-
-  const hasImage = image?.asset && !imageError;
+  const domain = getDomain(url);
+  const hasImage = !!image?.asset && !imageError;
 
   return (
     <Link href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
       <article className="group flex flex-col h-full border border-border dark:border-border-dark rounded-lg overflow-hidden hover:border-accent dark:hover:border-accent-dark transition-all duration-300 cursor-pointer">
-        {hasImage && (
+        {image?.asset && !imageError && (
           <div className="relative aspect-video overflow-hidden bg-border dark:bg-border-dark">
             <Image
               src={urlFor(image).width(IMAGE_SIZES.POST_CARD.width).height(IMAGE_SIZES.POST_CARD.height).url()}

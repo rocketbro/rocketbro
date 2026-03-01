@@ -4,10 +4,10 @@ import { urlFor } from "@/lib/sanity/image";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { codepenEmbed } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { IMAGE_SIZES } from "@/lib/constants";
-import type { SITE_SETTINGS_QUERYResult, POST_BY_SLUG_QUERYResult } from "@/lib/sanity/types";
+import type { SITE_SETTINGS_QUERY_RESULT, POST_BY_SLUG_QUERY_RESULT } from "@/lib/sanity/types";
 
-type IntroTextContent = NonNullable<SITE_SETTINGS_QUERYResult>["introText"];
-type PortableTextContent = NonNullable<POST_BY_SLUG_QUERYResult>["body"];
+type IntroTextContent = NonNullable<SITE_SETTINGS_QUERY_RESULT>["introText"];
+type PortableTextContent = NonNullable<POST_BY_SLUG_QUERY_RESULT>["body"];
 
 const components: PortableTextComponents = {
   block: {

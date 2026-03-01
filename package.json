@@ -9,14 +9,14 @@
     "lint": "eslint",
     "sanity:dev": "cd cms && npm run dev",
     "sanity:deploy": "cd cms && npm run deploy",
-    "typegen": "cd cms && npx sanity@latest schema extract && npx sanity@latest typegen generate --config-path=../sanity-typegen.json"
+    "typegen": "cd cms && npm exec sanity schema extract && npm exec sanity typegen generate"
   },
   "dependencies": {
     "@portabletext/react": "^6.0.2",
     "@sanity/client": "^7.14.0",
-    "@sanity/code-input": "^7.0.6",
+    "@sanity/code-input": "^7.0.8",
     "@sanity/image-url": "^2.0.3",
-    "@sanity/vision": "^5.5.0",
+    "@sanity/vision": "^5.12.0",
     "@types/react-syntax-highlighter": "^15.5.13",
     "next": "^16.1.4",
     "next-sanity": "^12.0.14",
@@ -24,7 +24,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-syntax-highlighter": "^16.1.0",
-    "sanity": "^5.5.0"
+    "sanity": "^5.12.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

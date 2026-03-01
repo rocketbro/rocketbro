@@ -9,21 +9,22 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "deploy-graphql": "sanity graphql deploy",
+    "lint": "eslint ."
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
-    "@sanity/code-input": "^6.0.1",
-    "@sanity/vision": "^4.10.2",
-    "react": "^19.1",
-    "react-dom": "^19.1",
-    "sanity": "^4.10.2",
+    "@sanity/code-input": "^7.0.8",
+    "@sanity/vision": "^5.12.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "sanity": "^5.12.0",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^5.0.2",
+    "@sanity/eslint-config-studio": "^6.0.0",
     "@types/react": "^19.1",
     "eslint": "^9.28",
     "prettier": "^3.5",

@@ -4,8 +4,8 @@ import { LinkCard } from "@/components/LinkCard";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";
 import { Footer } from "@/components/Footer";
 import type {
-  LINKS_QUERYResult,
-  SITE_SETTINGS_QUERYResult,
+  LINKS_QUERY_RESULT,
+  SITE_SETTINGS_QUERY_RESULT,
 } from "@/lib/sanity/types";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
@@ -18,11 +18,11 @@ export const metadata = {
 
 export default async function LinksPage() {
   const [linksData, settings] = await Promise.all([
-    sanityFetch<LINKS_QUERYResult>({
+    sanityFetch<LINKS_QUERY_RESULT>({
       query: LINKS_QUERY,
       tags: ["links"],
     }),
-    sanityFetch<SITE_SETTINGS_QUERYResult>({
+    sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
       query: SITE_SETTINGS_QUERY,
       tags: ["settings"],
     }),
@@ -81,21 +81,13 @@ export default async function LinksPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {linksData.links
                       .filter((link): link is typeof link & { url: string } => link.url !== null)
-                      .map((link, index) => ({
-                        url: link.url,
-                        description: link.description ?? undefined,
-                        image: link.image && link.image.asset ? {
-                          asset: {
-                            _ref: link.image.asset._id,
-                            _type: link.image.asset._type,
-                            url: link.image.asset.url,
-                          },
-                          alt: link.image.alt ?? undefined,
-                        } : undefined,
-                        _index: index,
-                      }))
-                      .map(({ _index, ...link }) => (
-                        <LinkCard key={_index} {...link} />
+                      .map((link, index) => (
+                        <LinkCard
+                          key={`${link.url}-${index}`}
+                          url={link.url}
+                          description={link.description ?? undefined}
+                          image={link.image ?? undefined}
+                        />
                       ))}
                   </div>
                 ) : (

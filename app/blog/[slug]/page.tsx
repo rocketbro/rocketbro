@@ -12,9 +12,9 @@ import { urlFor } from "@/lib/sanity/image";
 import { Footer } from "@/components/Footer";
 import { IMAGE_SIZES } from "@/lib/constants";
 import type {
-  POST_BY_SLUG_QUERYResult,
-  ALL_POST_SLUGS_QUERYResult,
-  SITE_SETTINGS_QUERYResult,
+  POST_BY_SLUG_QUERY_RESULT,
+  ALL_POST_SLUGS_QUERY_RESULT,
+  SITE_SETTINGS_QUERY_RESULT,
 } from "@/lib/sanity/types";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -28,7 +28,7 @@ interface PageProps {
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
-  const posts = await sanityFetch<ALL_POST_SLUGS_QUERYResult>({
+  const posts = await sanityFetch<ALL_POST_SLUGS_QUERY_RESULT>({
     query: ALL_POST_SLUGS_QUERY,
     tags: ["post"],
   });
@@ -43,7 +43,7 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await sanityFetch<POST_BY_SLUG_QUERYResult>({
+  const post = await sanityFetch<POST_BY_SLUG_QUERY_RESULT>({
     query: POST_BY_SLUG_QUERY,
     params: { slug },
     tags: ["post", `post:${slug}`],
@@ -95,12 +95,12 @@ export async function generateMetadata({
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
   const [post, settings] = await Promise.all([
-    sanityFetch<POST_BY_SLUG_QUERYResult>({
+    sanityFetch<POST_BY_SLUG_QUERY_RESULT>({
       query: POST_BY_SLUG_QUERY,
       params: { slug },
       tags: ["post", `post:${slug}`],
     }),
-    sanityFetch<SITE_SETTINGS_QUERYResult>({
+    sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
       query: SITE_SETTINGS_QUERY,
       tags: ["settings"],
     }),
@@ -220,9 +220,6 @@ export default async function BlogPostPage({ params }: PageProps) {
               Back to home
             </Link>
           </div>
-
-
-          
 
           {/* Featured Image */}
           {post.mainImage?.asset && (

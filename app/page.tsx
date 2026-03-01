@@ -5,8 +5,8 @@ import { PortableTextRenderer } from "@/components/PortableTextRenderer";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";
 import { Footer } from "@/components/Footer";
 import type {
-  RECENT_POSTS_QUERYResult,
-  SITE_SETTINGS_QUERYResult,
+  RECENT_POSTS_QUERY_RESULT,
+  SITE_SETTINGS_QUERY_RESULT,
 } from "@/lib/sanity/types";
 
 // Enable on-demand revalidation via API route
@@ -14,11 +14,11 @@ import type {
 
 export default async function Home() {
   const [settings, posts] = await Promise.all([
-    sanityFetch<SITE_SETTINGS_QUERYResult>({
+    sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
       query: SITE_SETTINGS_QUERY,
       tags: ["settings"],
     }),
-    sanityFetch<RECENT_POSTS_QUERYResult>({
+    sanityFetch<RECENT_POSTS_QUERY_RESULT>({
       query: RECENT_POSTS_QUERY,
       tags: ["post"],
     }),
