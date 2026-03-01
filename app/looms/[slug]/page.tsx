@@ -73,8 +73,10 @@ export default async function LoomPage({ params }: PageProps) {
             </Link>
           </div>
 
-          <header className="mb-10 max-w-4xl text-center">
-            <h1 className="text-5xl font-bold mb-3">{loom.tree.title || "Untitled Loom"}</h1>
+          <header className="mt-8 md:mt-12 mb-16 md:mb-24 max-w-4xl text-center">
+            <h1 className="text-5xl font-bold mb-6 md:mb-8">
+              {loom.tree.title || "Untitled Loom"}
+            </h1>
             {loom.tree.description && (
               <p className="text-2xl opacity-80 whitespace-pre-wrap text-left">
                 {loom.tree.description}

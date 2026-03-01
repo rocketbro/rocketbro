@@ -227,7 +227,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
         <button
           type="button"
           onClick={copyCurrentPath}
-          className="inline-flex items-center gap-2 text-sm font-mono opacity-80 hover:opacity-100 transition-opacity"
+          className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
         >
           {pathCopied ? <FiCheck className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
           <span>{pathCopied ? "Copied current path" : "Copy current path"}</span>
@@ -307,7 +307,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
         <button
           type="button"
           onClick={copyCurrentPath}
-          className="inline-flex items-center gap-2 text-sm font-mono opacity-80 hover:opacity-100 transition-opacity"
+          className="inline-flex items-center rounded-full border border-primary px-4 gap-2 text-primary dark:text-primary-dark hover:text-accent dark:hover:text-accent-dark transition-colors font-cascadia"
         >
           {pathCopied ? <FiCheck className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
           <span>{pathCopied ? "Copied current path" : "Copy current path"}</span>
