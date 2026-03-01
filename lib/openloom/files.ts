@@ -77,6 +77,16 @@ function toEpochMilliseconds(value?: string | number) {
   return undefined;
 }
 
+function firstNonEmptyText(...values: Array<string | null | undefined>) {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
 async function fetchTreeFromUrl(url: string, sourceLabel: string): Promise<OpenLoomTree> {
   const response = await fetch(url, {
     cache: process.env.NODE_ENV === "development" ? "no-store" : "force-cache",
@@ -153,8 +163,8 @@ async function listSanityOpenLoomSummaries(): Promise<OpenLoomFileSummary[]> {
           slug: doc.slug.current,
           source: "sanity",
           fileName,
-          title: doc.title || tree.title || titleFromFileName(fileName),
-          description: doc.description || tree.description || undefined,
+          title: firstNonEmptyText(doc.title, tree.title, titleFromFileName(fileName)) || "Untitled Loom",
+          description: firstNonEmptyText(doc.description, tree.description),
           nodeCount: Object.keys(tree.nodes).length,
           bookmarkCount: createBookmarkCount(tree),
           currentNodeId: tree.currentNodeId,
@@ -219,8 +229,8 @@ async function getSanityOpenLoomBySlug(slug: string): Promise<OpenLoomFileData |
       fileName: doc.openLoomFile.asset.originalFilename || `${doc.slug.current}.openloom.json`,
       tree: {
         ...tree,
-        title: doc.title || tree.title,
-        description: doc.description || tree.description,
+        title: firstNonEmptyText(doc.title, tree.title) || "Untitled Loom",
+        description: firstNonEmptyText(doc.description, tree.description),
         lastModified: tree.lastModified || toEpochMilliseconds(doc._updatedAt),
       },
     };

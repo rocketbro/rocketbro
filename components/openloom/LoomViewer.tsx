@@ -223,7 +223,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
 
   return (
     <div>
-      <div className="mb-4">
+      <div className="mb-4 flex justify-center">
         <button
           type="button"
           onClick={copyCurrentPath}
@@ -303,7 +303,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
         })}
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 flex justify-center">
         <button
           type="button"
           onClick={copyCurrentPath}
