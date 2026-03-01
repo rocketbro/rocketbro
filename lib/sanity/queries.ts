@@ -139,7 +139,6 @@ export const LOOMS_QUERY = defineQuery(`
     title,
     slug,
     description,
-    isPasswordProtected,
     openLoomFile {
       asset-> {
         url,
@@ -157,7 +156,6 @@ export const LOOM_BY_SLUG_QUERY = defineQuery(`
     title,
     slug,
     description,
-    isPasswordProtected,
     openLoomFile {
       asset-> {
         url,
@@ -171,15 +169,5 @@ export const LOOM_BY_SLUG_QUERY = defineQuery(`
 export const ALL_LOOM_SLUGS_QUERY = defineQuery(`
   *[_type == "loom" && defined(slug.current)] {
     "slug": slug.current
-  }
-`);
-
-// Query for password protection settings on a loom
-export const LOOM_ACCESS_BY_SLUG_QUERY = defineQuery(`
-  *[_type == "loom" && slug.current == $slug][0] {
-    _id,
-    "slug": slug.current,
-    isPasswordProtected,
-    accessPassword
   }
 `);
