@@ -8,6 +8,7 @@ import { LoomNodeContent } from "@/components/openloom/LoomNodeContent";
 interface LoomNodeProps {
   node: OpenLoomNode;
   continuationCount: number;
+  isContinuationsOpen: boolean;
   onOpenContinuations: () => void;
   onContextMenu: (event: React.MouseEvent<HTMLElement>) => void;
 }
@@ -19,6 +20,7 @@ function isUserNode(author: string) {
 export function LoomNode({
   node,
   continuationCount,
+  isContinuationsOpen,
   onOpenContinuations,
   onContextMenu,
 }: LoomNodeProps) {
@@ -65,6 +67,8 @@ export function LoomNode({
                 <button
                   type="button"
                   onClick={onOpenContinuations}
+                  data-continuation-toggle-for={node.id}
+                  aria-expanded={isContinuationsOpen}
                   className="px-2 hover:opacity-100 transition-opacity"
                 >
                   Continuations: {continuationCount}

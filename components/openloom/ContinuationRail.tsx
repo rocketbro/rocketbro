@@ -31,6 +31,7 @@ export function ContinuationRail({
 }: ContinuationRailProps) {
   return (
     <div
+      data-continuation-rail-for={parentNodeId}
       className={`mt-3 rounded-2xl border border-border/70 dark:border-border-dark/70 p-4 transform-gpu ${
         isClosing ? "loom-rail-exit" : "loom-rail-enter"
       }`}

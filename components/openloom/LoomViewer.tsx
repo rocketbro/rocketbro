@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FiBookmark, FiCheck, FiCopy } from "react-icons/fi";
 import type { OpenLoomTree } from "@/lib/openloom/types";
 import {
@@ -104,6 +104,25 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     ? getContinuationCount(tree.nodes[contextMenu.nodeId] ?? { id: "", author: "", text: "" })
     : 0;
 
+  const closeContinuations = useCallback(() => {
+    if (!expandedNodeId) {
+      return;
+    }
+
+    if (closeTimeoutRef.current) {
+      window.clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+
+    const nodeIdToClose = expandedNodeId;
+    setClosingNodeId(nodeIdToClose);
+    closeTimeoutRef.current = window.setTimeout(() => {
+      setExpandedNodeId(null);
+      setClosingNodeId(null);
+      closeTimeoutRef.current = null;
+    }, RAIL_EXIT_MS);
+  }, [expandedNodeId]);
+
   const copyCurrentPath = async () => {
     try {
       await navigator.clipboard.writeText(buildCurrentPathText(tree, activePath));
@@ -136,12 +155,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     }
 
     if (expandedNodeId === nodeId) {
-      setClosingNodeId(nodeId);
-      closeTimeoutRef.current = window.setTimeout(() => {
-        setExpandedNodeId(null);
-        setClosingNodeId(null);
-        closeTimeoutRef.current = null;
-      }, RAIL_EXIT_MS);
+      closeContinuations();
       setContextMenu(null);
       return;
     }
@@ -150,6 +164,34 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     setExpandedNodeId(nodeId);
     setContextMenu(null);
   };
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!expandedNodeId) {
+        return;
+      }
+
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (target.closest(`[data-continuation-rail-for="${expandedNodeId}"]`)) {
+        return;
+      }
+
+      if (target.closest(`[data-continuation-toggle-for="${expandedNodeId}"]`)) {
+        return;
+      }
+
+      closeContinuations();
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+    };
+  }, [closeContinuations, expandedNodeId]);
 
   const switchToContinuation = (parentId: string, childId: string) => {
     const currentScrollY = window.scrollY;
@@ -233,6 +275,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
               <LoomNode
                 node={node}
                 continuationCount={continuationCount}
+                isContinuationsOpen={expandedNodeId === node.id}
                 onOpenContinuations={() => toggleContinuations(node.id)}
                 onContextMenu={(event) => {
                   event.preventDefault();
