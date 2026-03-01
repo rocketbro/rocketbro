@@ -46,7 +46,7 @@ export function LoomNode({
       <div className={isUser ? "flex justify-end" : "w-full"}>
         <article
           className={isUser
-            ? "w-full max-w-2xl rounded-3xl bg-muted/50 dark:bg-white/10 px-5 py-4"
+            ? "w-full max-w-2xl rounded-3xl bg-black/[0.06] dark:bg-white/10 px-5 py-4"
             : "w-full"}
         >
           <LoomNodeContent text={node.text} />
