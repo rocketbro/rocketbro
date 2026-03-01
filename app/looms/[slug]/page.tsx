@@ -60,7 +60,7 @@ export default async function LoomPage({ params }: PageProps) {
       />
 
       <div className="min-h-screen bg-background text-foreground dark:bg-background-dark dark:text-foreground-dark">
-        <main className="max-w-7xl mx-auto px-6 py-10">
+        <main className="max-w-4xl mx-auto px-6 py-10">
           <div className="mb-8">
             <Link
               href="/looms"
@@ -71,7 +71,7 @@ export default async function LoomPage({ params }: PageProps) {
             </Link>
           </div>
 
-          <header className="mb-10 max-w-5xl">
+          <header className="mb-10 max-w-4xl">
             <h1 className="text-5xl font-bold mb-3">{loom.tree.title || "Untitled Loom"}</h1>
             {loom.tree.description && (
               <p className="text-2xl opacity-80 whitespace-pre-wrap">

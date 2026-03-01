@@ -91,7 +91,7 @@ export function LoomNode({
           <button
             type="button"
             onClick={onOpenContinuations}
-            className="text-xl md:text-2xl italic opacity-75 hover:opacity-100 transition-opacity"
+            className="px-2 text-sm font-mono italic opacity-75 hover:opacity-100 transition-opacity"
           >
             Continuations: {continuationCount}
           </button>
