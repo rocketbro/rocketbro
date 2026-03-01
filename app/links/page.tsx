@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/lib/sanity/client";
+import { sanityFetch } from "@/lib/sanity/server-client";
 import { LINKS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import { LinkCard } from "@/components/LinkCard";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";

@@ -2,7 +2,7 @@ import { Footer } from "@/components/Footer";
 import { LoomCard } from "@/components/openloom/LoomCard";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";
 import { listOpenLoomSummaries } from "@/lib/openloom/files";
-import { sanityFetch } from "@/lib/sanity/client";
+import { sanityFetch } from "@/lib/sanity/server-client";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/lib/sanity/types";
 

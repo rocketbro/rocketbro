@@ -35,7 +35,7 @@ Your webhook should be configured with:
 When fetching data from Sanity, use the `sanityFetch()` helper function with tags:
 
 ```typescript
-import { sanityFetch } from "@/lib/sanity/client";
+import { sanityFetch } from "@/lib/sanity/server-client";
 import { postsQuery } from "@/lib/sanity/queries";
 
 // In your page or component
