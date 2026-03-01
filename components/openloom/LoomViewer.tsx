@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiBookmark } from "react-icons/fi";
+import { FiBookmark, FiCheck, FiCopy } from "react-icons/fi";
 import type { OpenLoomTree } from "@/lib/openloom/types";
 import {
   applyNodeToBranch,
@@ -25,6 +25,40 @@ interface ContextMenuState {
 }
 
 const RAIL_EXIT_MS = 170;
+const COPY_FEEDBACK_MS = 1500;
+
+function toSpeakerLabel(author: string | undefined) {
+  return author?.toLowerCase() === "user" ? "user" : "assistant";
+}
+
+function buildCurrentPathText(tree: OpenLoomTree, activePath: string[]) {
+  const lines: string[] = [];
+
+  if (tree.title) {
+    lines.push(`Title: ${tree.title}`);
+  }
+
+  if (tree.description) {
+    lines.push(`Description: ${tree.description}`);
+  }
+
+  if (tree.title || tree.description) {
+    lines.push("");
+  }
+
+  for (const nodeId of activePath) {
+    const node = tree.nodes[nodeId];
+    if (!node) {
+      continue;
+    }
+
+    lines.push(`${toSpeakerLabel(node.author)}:`);
+    lines.push((node.text || "").trim());
+    lines.push("");
+  }
+
+  return lines.join("\n").trim();
+}
 
 export function LoomViewer({ tree }: LoomViewerProps) {
   const [selection, setSelection] = useState<BranchSelectionMap>(() =>
@@ -33,8 +67,10 @@ export function LoomViewer({ tree }: LoomViewerProps) {
   const [expandedNodeId, setExpandedNodeId] = useState<string | null>(null);
   const [closingNodeId, setClosingNodeId] = useState<string | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
+  const copyTimeoutRef = useRef<number | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const [pathCopied, setPathCopied] = useState(false);
 
   useEffect(() => {
     const closeMenu = () => setContextMenu(null);
@@ -52,6 +88,10 @@ export function LoomViewer({ tree }: LoomViewerProps) {
       if (closeTimeoutRef.current) {
         window.clearTimeout(closeTimeoutRef.current);
       }
+
+      if (copyTimeoutRef.current) {
+        window.clearTimeout(copyTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -59,11 +99,28 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     () => traceActiveBranch(tree, selection),
     [tree, selection],
   );
-  const activeLeafId = activePath[activePath.length - 1];
   const bookmarkedNodes = useMemo(() => getBookmarkedNodes(tree), [tree]);
   const contextMenuContinuationCount = contextMenu
     ? getContinuationCount(tree.nodes[contextMenu.nodeId] ?? { id: "", author: "", text: "" })
     : 0;
+
+  const copyCurrentPath = async () => {
+    try {
+      await navigator.clipboard.writeText(buildCurrentPathText(tree, activePath));
+      setPathCopied(true);
+
+      if (copyTimeoutRef.current) {
+        window.clearTimeout(copyTimeoutRef.current);
+      }
+
+      copyTimeoutRef.current = window.setTimeout(() => {
+        setPathCopied(false);
+        copyTimeoutRef.current = null;
+      }, COPY_FEEDBACK_MS);
+    } catch {
+      setPathCopied(false);
+    }
+  };
 
   const toggleContinuations = (nodeId: string) => {
     const continuationCount = getContinuationCount(
@@ -124,6 +181,17 @@ export function LoomViewer({ tree }: LoomViewerProps) {
 
   return (
     <div>
+      <div className="mb-4">
+        <button
+          type="button"
+          onClick={copyCurrentPath}
+          className="inline-flex items-center gap-2 text-sm font-mono opacity-80 hover:opacity-100 transition-opacity"
+        >
+          {pathCopied ? <FiCheck className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
+          <span>{pathCopied ? "Copied current path" : "Copy current path"}</span>
+        </button>
+      </div>
+
       <div className="mb-8 rounded-2xl border border-border/70 dark:border-border-dark/70 p-4">
         <button
           type="button"
@@ -164,7 +232,6 @@ export function LoomViewer({ tree }: LoomViewerProps) {
             <div key={node.id}>
               <LoomNode
                 node={node}
-                isLeaf={node.id === activeLeafId}
                 continuationCount={continuationCount}
                 onOpenContinuations={() => toggleContinuations(node.id)}
                 onContextMenu={(event) => {
@@ -191,6 +258,17 @@ export function LoomViewer({ tree }: LoomViewerProps) {
             </div>
           );
         })}
+      </div>
+
+      <div className="mt-8">
+        <button
+          type="button"
+          onClick={copyCurrentPath}
+          className="inline-flex items-center gap-2 text-sm font-mono opacity-80 hover:opacity-100 transition-opacity"
+        >
+          {pathCopied ? <FiCheck className="h-4 w-4" /> : <FiCopy className="h-4 w-4" />}
+          <span>{pathCopied ? "Copied current path" : "Copy current path"}</span>
+        </button>
       </div>
 
       {contextMenu && (

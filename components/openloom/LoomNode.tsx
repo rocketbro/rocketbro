@@ -7,7 +7,6 @@ import { LoomNodeContent } from "@/components/openloom/LoomNodeContent";
 
 interface LoomNodeProps {
   node: OpenLoomNode;
-  isLeaf: boolean;
   continuationCount: number;
   onOpenContinuations: () => void;
   onContextMenu: (event: React.MouseEvent<HTMLElement>) => void;
@@ -19,7 +18,6 @@ function isUserNode(author: string) {
 
 export function LoomNode({
   node,
-  isLeaf,
   continuationCount,
   onOpenContinuations,
   onContextMenu,
@@ -51,29 +49,7 @@ export function LoomNode({
         >
           <LoomNodeContent text={node.text} />
 
-          <div className="mt-4 flex items-center gap-2 text-sm opacity-70 font-mono flex-wrap">
-            <span>{node.author}</span>
-            {node.modelId && (
-              <>
-                <span>•</span>
-                <span>{node.modelId}</span>
-              </>
-            )}
-            {node.isBookmarked && (
-              <>
-                <span>•</span>
-                <span>bookmarked</span>
-              </>
-            )}
-            {isLeaf && (
-              <>
-                <span>•</span>
-                <span className="text-accent dark:text-accent-dark">current leaf</span>
-              </>
-            )}
-          </div>
-
-          <div className="mt-2 flex items-center gap-2 text-sm font-mono opacity-75">
+          <div className="mt-4 flex items-center gap-2 text-sm font-mono opacity-75">
             <button
               type="button"
               onClick={copyNodeText}

@@ -60,8 +60,10 @@ export function ContinuationRail({
                   : "border-border dark:border-border-dark bg-[#c7b393] text-black hover:-translate-y-0.5"
               }`}
             >
-              <div className="mb-3 flex items-center justify-between gap-2 text-sm font-mono">
-                <div className="truncate opacity-80">{child.modelId || child.author}</div>
+              <div className="mb-3 flex flex-col gap-2 text-sm font-mono">
+                <div className="opacity-80 whitespace-normal break-all leading-snug">
+                  {child.modelId || child.author}
+                </div>
                 <div className="flex items-center gap-2">
                   {isCurrent && <span className="text-[#2f6d3b]">●</span>}
                   {child.isBookmarked && <FiBookmark className="h-4 w-4" />}
