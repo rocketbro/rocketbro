@@ -26,6 +26,7 @@ interface ContextMenuState {
 
 const RAIL_EXIT_MS = 170;
 const COPY_FEEDBACK_MS = 1500;
+const TAP_MOVE_THRESHOLD_PX = 8;
 
 function toSpeakerLabel(author: string | undefined) {
   return author?.toLowerCase() === "user" ? "user" : "assistant";
@@ -68,6 +69,12 @@ export function LoomViewer({ tree }: LoomViewerProps) {
   const [closingNodeId, setClosingNodeId] = useState<string | null>(null);
   const closeTimeoutRef = useRef<number | null>(null);
   const copyTimeoutRef = useRef<number | null>(null);
+  const outsideTapRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    moved: boolean;
+  } | null>(null);
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [pathCopied, setPathCopied] = useState(false);
@@ -177,19 +184,82 @@ export function LoomViewer({ tree }: LoomViewerProps) {
       }
 
       if (target.closest(`[data-continuation-rail-for="${expandedNodeId}"]`)) {
+        outsideTapRef.current = null;
         return;
       }
 
       if (target.closest(`[data-continuation-toggle-for="${expandedNodeId}"]`)) {
+        outsideTapRef.current = null;
         return;
       }
 
-      closeContinuations();
+      outsideTapRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        moved: false,
+      };
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const pendingTap = outsideTapRef.current;
+      if (!pendingTap || pendingTap.pointerId !== event.pointerId || pendingTap.moved) {
+        return;
+      }
+
+      const deltaX = Math.abs(event.clientX - pendingTap.startX);
+      const deltaY = Math.abs(event.clientY - pendingTap.startY);
+      if (deltaX > TAP_MOVE_THRESHOLD_PX || deltaY > TAP_MOVE_THRESHOLD_PX) {
+        pendingTap.moved = true;
+      }
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      const pendingTap = outsideTapRef.current;
+      if (!pendingTap || pendingTap.pointerId !== event.pointerId) {
+        return;
+      }
+
+      if (!pendingTap.moved) {
+        const target = event.target;
+        if (target instanceof HTMLElement) {
+          if (target.closest(`[data-continuation-rail-for="${expandedNodeId}"]`)) {
+            outsideTapRef.current = null;
+            return;
+          }
+
+          if (target.closest(`[data-continuation-toggle-for="${expandedNodeId}"]`)) {
+            outsideTapRef.current = null;
+            return;
+          }
+        }
+
+        closeContinuations();
+      }
+
+      outsideTapRef.current = null;
+    };
+
+    const clearPendingTap = (event: PointerEvent) => {
+      const pendingTap = outsideTapRef.current;
+      if (!pendingTap || pendingTap.pointerId !== event.pointerId) {
+        return;
+      }
+
+      outsideTapRef.current = null;
     };
 
     window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", clearPendingTap);
+
     return () => {
       window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", clearPendingTap);
+      outsideTapRef.current = null;
     };
   }, [closeContinuations, expandedNodeId]);
 
