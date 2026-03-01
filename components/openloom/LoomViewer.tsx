@@ -53,6 +53,13 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     : 0;
 
   const toggleContinuations = (nodeId: string) => {
+    const continuationCount = getContinuationCount(
+      tree.nodes[nodeId] ?? { id: "", author: "", text: "" },
+    );
+    if (continuationCount <= 1) {
+      return;
+    }
+
     setExpandedNodeId((previous) => (previous === nodeId ? null : nodeId));
     setContextMenu(null);
   };
@@ -113,7 +120,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
         )}
       </div>
 
-      <div className="space-y-0">
+      <div className="space-y-1">
         {activePath.map((nodeId) => {
           const node = tree.nodes[nodeId];
           if (!node) {
@@ -139,7 +146,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
                 }}
               />
 
-              {expandedNodeId === node.id && continuationCount > 0 && (
+              {expandedNodeId === node.id && continuationCount > 1 && (
                 <ContinuationRail
                   tree={tree}
                   parentNodeId={node.id}
@@ -163,7 +170,7 @@ export function LoomViewer({ tree }: LoomViewerProps) {
           >
             <button
               type="button"
-              disabled={contextMenuContinuationCount === 0}
+              disabled={contextMenuContinuationCount <= 1}
               className="w-full text-left px-3 py-2 rounded-md hover:bg-muted dark:hover:bg-muted-dark disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => toggleContinuations(contextMenu.nodeId)}
             >
