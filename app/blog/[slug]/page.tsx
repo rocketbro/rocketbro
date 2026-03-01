@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import {
   POST_BY_SLUG_QUERY,
   ALL_POST_SLUGS_QUERY,

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash, createHmac, timingSafeEqual } from "crypto";
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import { LOOM_ACCESS_BY_SLUG_QUERY } from "@/lib/sanity/queries";
 import type { LOOM_ACCESS_BY_SLUG_QUERY_RESULT } from "@/lib/sanity/types";
 

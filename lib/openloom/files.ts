@@ -2,7 +2,7 @@ import "server-only";
 
 import { promises as fs } from "fs";
 import path from "path";
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import {
   ALL_LOOM_SLUGS_QUERY,
   LOOM_BY_SLUG_QUERY,

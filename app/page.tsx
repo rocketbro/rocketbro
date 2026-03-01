@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import { RECENT_POSTS_QUERY, SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import { PostCard } from "@/components/PostCard";
 import { PortableTextRenderer } from "@/components/PortableTextRenderer";

@@ -1,4 +1,4 @@
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/lib/sanity/types";
 import { TopNav } from "./TopNav";

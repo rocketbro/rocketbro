@@ -9,7 +9,7 @@ import {
   verifyLoomAccessToken,
 } from "@/lib/openloom/access";
 import { getOpenLoomBySlug } from "@/lib/openloom/files";
-import { sanityFetch } from "@/lib/sanity/server-client";
+import { sanityFetch } from "@/lib/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/lib/sanity/types";
 import type { Metadata } from "next";
