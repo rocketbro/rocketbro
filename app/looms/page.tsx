@@ -39,6 +39,24 @@ export default async function LoomsPage() {
             <p className="text-2xl opacity-80">
               Read-only OpenLoom trees. Right-click any node to view its continuations.
             </p>
+            <div className="mt-4 flex flex-col gap-2 text-lg font-mono">
+              <a
+                href="https://www.latentspaces.app/loom-interface"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark transition-colors underline"
+              >
+                What is a Loom Interface?
+              </a>
+              <a
+                href="https://www.latentspaces.app/openloom"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark transition-colors underline"
+              >
+                Read about the OpenLoom Spec
+              </a>
+            </div>
           </section>
 
           {looms.length > 0 ? (
