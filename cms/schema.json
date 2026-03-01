@@ -86,6 +86,20 @@
         },
         "optional": true
       },
+      "isPasswordProtected": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "accessPassword": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "openLoomFile": {
         "type": "objectAttribute",
         "value": {

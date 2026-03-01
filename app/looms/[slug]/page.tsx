@@ -1,9 +1,16 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { LoomViewer } from "@/components/openloom/LoomViewer";
+import {
+  getLoomAccessCookiePath,
+  getSanityLoomAccessBySlug,
+  LOOM_ACCESS_COOKIE_NAME,
+  verifyLoomAccessToken,
+} from "@/lib/openloom/access";
 import { SchemaOrg, generateWebSiteSchema } from "@/components/SchemaOrg";
-import { getOpenLoomBySlug, listOpenLoomSummaries } from "@/lib/openloom/files";
+import { getOpenLoomBySlug } from "@/lib/openloom/files";
 import { sanityFetch } from "@/lib/sanity/client";
 import { SITE_SETTINGS_QUERY } from "@/lib/sanity/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/lib/sanity/types";
@@ -13,15 +20,21 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  const looms = await listOpenLoomSummaries();
-  return looms.map((loom) => ({ slug: loom.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const access = await getSanityLoomAccessBySlug(slug);
+  if (access?.isPasswordProtected) {
+    const token = (await cookies()).get(LOOM_ACCESS_COOKIE_NAME)?.value;
+    if (!verifyLoomAccessToken(token, slug)) {
+      return {
+        title: "Protected Loom | Looms",
+        description: "This loom is password protected.",
+      };
+    }
+  }
+
   const loom = await getOpenLoomBySlug(slug);
 
   if (!loom) {
@@ -36,6 +49,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function LoomPage({ params }: PageProps) {
   const { slug } = await params;
+  const access = await getSanityLoomAccessBySlug(slug);
+  if (access?.isPasswordProtected) {
+    const token = (await cookies()).get(LOOM_ACCESS_COOKIE_NAME)?.value;
+    if (!verifyLoomAccessToken(token, slug)) {
+      redirect(`${getLoomAccessCookiePath(slug)}/unlock`);
+    }
+  }
 
   const [loom, settings] = await Promise.all([
     getOpenLoomBySlug(slug),

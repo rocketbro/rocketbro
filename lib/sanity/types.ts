@@ -29,6 +29,8 @@ export type Loom = {
   title?: string;
   slug?: Slug;
   description?: string;
+  isPasswordProtected?: boolean;
+  accessPassword?: string;
   openLoomFile?: {
     asset?: SanityFileAssetReference;
     media?: unknown;
@@ -758,13 +760,14 @@ export type LINKS_QUERY_RESULT = {
 
 // Source: ../lib/sanity/queries.ts
 // Variable: LOOMS_QUERY
-// Query: *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {    _id,    _updatedAt,    title,    slug,    description,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
+// Query: *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {    _id,    _updatedAt,    title,    slug,    description,    isPasswordProtected,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
 export type LOOMS_QUERY_RESULT = Array<{
   _id: string;
   _updatedAt: string;
   title: string | null;
   slug: Slug | null;
   description: string | null;
+  isPasswordProtected: boolean | null;
   openLoomFile: {
     asset: {
       url: string | null;
@@ -775,13 +778,14 @@ export type LOOMS_QUERY_RESULT = Array<{
 
 // Source: ../lib/sanity/queries.ts
 // Variable: LOOM_BY_SLUG_QUERY
-// Query: *[_type == "loom" && slug.current == $slug][0] {    _id,    _updatedAt,    title,    slug,    description,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
+// Query: *[_type == "loom" && slug.current == $slug][0] {    _id,    _updatedAt,    title,    slug,    description,    isPasswordProtected,    openLoomFile {      asset-> {        url,        originalFilename      }    }  }
 export type LOOM_BY_SLUG_QUERY_RESULT = {
   _id: string;
   _updatedAt: string;
   title: string | null;
   slug: Slug | null;
   description: string | null;
+  isPasswordProtected: boolean | null;
   openLoomFile: {
     asset: {
       url: string | null;
@@ -797,6 +801,16 @@ export type ALL_LOOM_SLUGS_QUERY_RESULT = Array<{
   slug: string | null;
 }>;
 
+// Source: ../lib/sanity/queries.ts
+// Variable: LOOM_ACCESS_BY_SLUG_QUERY
+// Query: *[_type == "loom" && slug.current == $slug][0] {    _id,    "slug": slug.current,    isPasswordProtected,    accessPassword  }
+export type LOOM_ACCESS_BY_SLUG_QUERY_RESULT = {
+  _id: string;
+  slug: string | null;
+  isPasswordProtected: boolean | null;
+  accessPassword: string | null;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -807,8 +821,9 @@ declare module "@sanity/client" {
     '\n  *[_type == "settings"][0] {\n    siteTitle,\n    siteDescription,\n    introText,\n    socialLinks[] {\n      platform,\n      url\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...3] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    mainImage {\n      asset->,\n      alt\n    }\n  }\n': RELATED_POSTS_QUERY_RESULT;
     '\n  *[_type == "links"][0] {\n    _id,\n    title,\n    description,\n    headerImage {\n      asset->,\n      alt\n    },\n    links[] {\n      url,\n      description,\n      image {\n        asset->,\n        alt\n      }\n    }\n  }\n': LINKS_QUERY_RESULT;
-    '\n  *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOMS_QUERY_RESULT;
-    '\n  *[_type == "loom" && slug.current == $slug][0] {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOM_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "loom" && defined(slug.current)] | order(_updatedAt desc) {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    isPasswordProtected,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOMS_QUERY_RESULT;
+    '\n  *[_type == "loom" && slug.current == $slug][0] {\n    _id,\n    _updatedAt,\n    title,\n    slug,\n    description,\n    isPasswordProtected,\n    openLoomFile {\n      asset-> {\n        url,\n        originalFilename\n      }\n    }\n  }\n': LOOM_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "loom" && defined(slug.current)] {\n    "slug": slug.current\n  }\n': ALL_LOOM_SLUGS_QUERY_RESULT;
+    '\n  *[_type == "loom" && slug.current == $slug][0] {\n    _id,\n    "slug": slug.current,\n    isPasswordProtected,\n    accessPassword\n  }\n': LOOM_ACCESS_BY_SLUG_QUERY_RESULT;
   }
 }
