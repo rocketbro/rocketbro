@@ -29,6 +29,12 @@ export function TopNav({ siteTitle = "Rocketbro" }: TopNavProps) {
             >
               links
             </Link>
+            <Link
+              href="/looms"
+              className="text-lg hover:text-accent dark:hover:text-accent-dark transition-colors"
+            >
+              looms
+            </Link>
           </nav>
           <ThemeToggle />
         </div>

@@ -1,0 +1,76 @@
+"use client";
+
+import type { OpenLoomTree } from "@/lib/openloom/types";
+import type { BranchSelectionMap } from "@/lib/openloom/traversal";
+import { getContinuationDepth } from "@/lib/openloom/traversal";
+
+interface ContinuationRailProps {
+  tree: OpenLoomTree;
+  parentNodeId: string;
+  continuationIds: string[];
+  selection: BranchSelectionMap;
+  selectedChildId?: string;
+  onSelect: (childId: string) => void;
+}
+
+function previewText(text: string) {
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  return cleaned.length > 190 ? `${cleaned.slice(0, 190)}...` : cleaned;
+}
+
+export function ContinuationRail({
+  tree,
+  parentNodeId,
+  continuationIds,
+  selection,
+  selectedChildId,
+  onSelect,
+}: ContinuationRailProps) {
+  return (
+    <div className="mt-3 rounded-2xl border border-border/70 dark:border-border-dark/70 p-4">
+      <div className="mb-3 text-sm font-mono opacity-70">
+        Continuations from this node
+      </div>
+
+      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+        {continuationIds.map((childId) => {
+          const child = tree.nodes[childId];
+          if (!child) {
+            return null;
+          }
+
+          const isCurrent = childId === selectedChildId;
+          const depth = getContinuationDepth(tree, childId, selection);
+
+          return (
+            <button
+              key={childId}
+              type="button"
+              onClick={() => onSelect(childId)}
+              className={`snap-start w-[300px] flex-shrink-0 rounded-2xl border p-4 text-left transition-all ${
+                isCurrent
+                  ? "border-[#85c786] bg-[#ceb897] text-black"
+                  : "border-border dark:border-border-dark bg-[#c7b393] text-black hover:-translate-y-0.5"
+              }`}
+            >
+              <div className="mb-3 flex items-center justify-between gap-2 text-sm font-mono">
+                <div className="truncate opacity-80">{child.modelId || child.author}</div>
+                <div className="flex items-center gap-2">
+                  {isCurrent && <span className="text-[#2f6d3b]">●</span>}
+                  {child.isBookmarked && <span>★</span>}
+                  <span>[{depth}]</span>
+                </div>
+              </div>
+
+              <p className="text-2xl leading-snug">{previewText(child.text || "")}</p>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-2 text-sm font-mono opacity-65">
+        Parent node: {parentNodeId.slice(0, 8)}
+      </p>
+    </div>
+  );
+}
