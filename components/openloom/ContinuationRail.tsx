@@ -57,8 +57,8 @@ export function ContinuationRail({
               onClick={() => onSelect(childId)}
               className={`snap-start w-[300px] flex-shrink-0 rounded-xl border p-4 text-left transition-all ${
                 isCurrent
-                  ? "border-[#85c786] bg-[#ceb897] text-black"
-                  : "border-border dark:border-border-dark bg-[#c7b393] text-black hover:-translate-y-0.5"
+                  ? "border-[#85c786] bg-[#dcccb7] dark:bg-[#ceb897] text-black"
+                  : "border-border dark:border-border-dark bg-[#d6c6af] dark:bg-[#c7b393] text-black hover:-translate-y-0.5"
               }`}
             >
               <div className="mb-3 flex flex-col gap-2 text-sm font-mono">
