@@ -30,6 +30,14 @@
     @apply border-border;
   }
 
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-garamond), ui-serif, Georgia, serif;
@@ -110,4 +118,9 @@
 
 .loom-rail-exit {
   animation: loomRailOut 160ms ease-in both;
+}
+
+.loom-markdown img {
+  max-width: 100%;
+  height: auto;
 }
