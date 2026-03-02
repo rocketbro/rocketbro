@@ -72,7 +72,9 @@ export function ContinuationRail({
                 </div>
               </div>
 
-              <p className="text-xl leading-relaxed">{previewText(child.text || "")}</p>
+              <p className="text-xl leading-relaxed break-words [overflow-wrap:anywhere]">
+                {previewText(child.text || "")}
+              </p>
             </button>
           );
         })}
