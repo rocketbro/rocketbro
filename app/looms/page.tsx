@@ -39,6 +39,20 @@ export default async function LoomsPage() {
             <p className="text-2xl opacity-80">
               Read-only OpenLoom trees. Right-click any node to view its continuations.
             </p>
+            <div className="mt-8 space-y-6 max-w-3xl">
+              <p className="text-3xl font-bold">Getting Started</p>
+              <p className="text-2xl opacity-85">
+                Messages are called nodes. Right click any node to view continuations.
+              </p>
+              <p className="text-2xl opacity-85">
+                When viewing continuations, a green indicator appears for nodes on the current
+                branch.
+              </p>
+              <p className="text-2xl opacity-85">
+                Continuations also display the number of on-branch nodes they precede in square
+                brackets: [3]
+              </p>
+            </div>
             <div className="mt-4 flex flex-col gap-2 text-lg font-mono">
               <a
                 href="https://www.latentspaces.app/loom-interface"
