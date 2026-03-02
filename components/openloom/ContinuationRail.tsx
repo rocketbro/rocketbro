@@ -37,10 +37,10 @@ export function ContinuationRail({
       }`}
     >
       <div className="mb-3 text-sm font-mono opacity-70">
-        Continuations from this node
+        Continuations from node: {parentNodeId.slice(0, 8)}
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
+      <div className="flex items-start gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
         {continuationIds.map((childId) => {
           const child = tree.nodes[childId];
           if (!child) {
@@ -55,7 +55,7 @@ export function ContinuationRail({
               key={childId}
               type="button"
               onClick={() => onSelect(childId)}
-              className={`snap-start w-[300px] flex-shrink-0 rounded-2xl border p-4 text-left transition-all ${
+              className={`snap-start w-[300px] flex-shrink-0 rounded-xl border p-4 text-left transition-all ${
                 isCurrent
                   ? "border-[#85c786] bg-[#ceb897] text-black"
                   : "border-border dark:border-border-dark bg-[#c7b393] text-black hover:-translate-y-0.5"
@@ -72,15 +72,11 @@ export function ContinuationRail({
                 </div>
               </div>
 
-              <p className="text-2xl leading-snug">{previewText(child.text || "")}</p>
+              <p className="text-xl leading-relaxed">{previewText(child.text || "")}</p>
             </button>
           );
         })}
       </div>
-
-      <p className="mt-2 text-sm font-mono opacity-65">
-        Parent node: {parentNodeId.slice(0, 8)}
-      </p>
     </div>
   );
 }
