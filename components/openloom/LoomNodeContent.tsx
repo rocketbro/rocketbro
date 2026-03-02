@@ -2,6 +2,7 @@
 
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { codepenEmbed } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { LoomMarkdown } from "@/components/openloom/LoomMarkdown";
 
 interface LoomNodeContentProps {
   text: string;
@@ -83,12 +84,7 @@ export function LoomNodeContent({ text }: LoomNodeContentProps) {
         }
 
         return (
-          <p
-            key={`text-${index}`}
-            className="text-xl md:text-2xl leading-relaxed whitespace-pre-wrap break-words"
-          >
-            {segment.text}
-          </p>
+          <LoomMarkdown key={`text-${index}`} markdown={segment.text} />
         );
       })}
     </div>
