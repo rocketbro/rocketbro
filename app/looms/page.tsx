@@ -37,12 +37,12 @@ export default async function LoomsPage() {
           <section className="mb-14 max-w-4xl">
             <h1 className="text-5xl font-bold mb-5">Looms</h1>
             <p className="text-2xl opacity-80">
-              Read-only OpenLoom trees. Right-click any node to view its continuations.
+              Read-only OpenLoom trees. Click the continuations button to view alternate paths.
             </p>
             <div className="mt-8 space-y-6 max-w-3xl">
               <p className="text-3xl font-bold">Getting Started</p>
               <p className="text-2xl opacity-85">
-                Messages are called nodes. Right click any node to view continuations.
+                Messages are called nodes. Click the continuations button to view alternate paths.
               </p>
               <p className="text-2xl opacity-85">
                 When viewing continuations, a green indicator appears for nodes on the current

@@ -18,12 +18,6 @@ interface LoomViewerProps {
   tree: OpenLoomTree;
 }
 
-interface ContextMenuState {
-  nodeId: string;
-  x: number;
-  y: number;
-}
-
 const RAIL_EXIT_MS = 170;
 const COPY_FEEDBACK_MS = 1500;
 const TAP_MOVE_THRESHOLD_PX = 8;
@@ -75,20 +69,8 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     startY: number;
     moved: boolean;
   } | null>(null);
-  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [pathCopied, setPathCopied] = useState(false);
-
-  useEffect(() => {
-    const closeMenu = () => setContextMenu(null);
-    window.addEventListener("click", closeMenu);
-    window.addEventListener("scroll", closeMenu);
-
-    return () => {
-      window.removeEventListener("click", closeMenu);
-      window.removeEventListener("scroll", closeMenu);
-    };
-  }, []);
 
   useEffect(() => {
     return () => {
@@ -107,9 +89,6 @@ export function LoomViewer({ tree }: LoomViewerProps) {
     [tree, selection],
   );
   const bookmarkedNodes = useMemo(() => getBookmarkedNodes(tree), [tree]);
-  const contextMenuContinuationCount = contextMenu
-    ? getContinuationCount(tree.nodes[contextMenu.nodeId] ?? { id: "", author: "", text: "" })
-    : 0;
 
   const closeContinuations = useCallback(() => {
     if (!expandedNodeId) {
@@ -163,13 +142,11 @@ export function LoomViewer({ tree }: LoomViewerProps) {
 
     if (expandedNodeId === nodeId) {
       closeContinuations();
-      setContextMenu(null);
       return;
     }
 
     setClosingNodeId(null);
     setExpandedNodeId(nodeId);
-    setContextMenu(null);
   };
 
   useEffect(() => {
@@ -280,7 +257,6 @@ export function LoomViewer({ tree }: LoomViewerProps) {
 
   const jumpToBookmark = (nodeId: string) => {
     setSelection((previous) => applyNodeToBranch(tree, previous, nodeId));
-    setContextMenu(null);
 
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
@@ -347,14 +323,6 @@ export function LoomViewer({ tree }: LoomViewerProps) {
                 continuationCount={continuationCount}
                 isContinuationsOpen={expandedNodeId === node.id}
                 onOpenContinuations={() => toggleContinuations(node.id)}
-                onContextMenu={(event) => {
-                  event.preventDefault();
-                  setContextMenu({
-                    nodeId: node.id,
-                    x: event.clientX,
-                    y: event.clientY,
-                  });
-                }}
               />
 
               {expandedNodeId === node.id && continuationCount > 1 && (
@@ -383,25 +351,6 @@ export function LoomViewer({ tree }: LoomViewerProps) {
           <span>{pathCopied ? "Copied current path" : "Copy current path"}</span>
         </button>
       </div>
-
-      {contextMenu && (
-        <div className="fixed inset-0 z-50" onClick={() => setContextMenu(null)}>
-          <div
-            className="absolute rounded-lg border border-border dark:border-border-dark bg-background dark:bg-background-dark shadow-xl p-2"
-            style={{ left: contextMenu.x, top: contextMenu.y }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              disabled={contextMenuContinuationCount <= 1}
-              className="w-full text-left px-3 py-2 rounded-md hover:bg-muted dark:hover:bg-muted-dark disabled:opacity-40 disabled:cursor-not-allowed"
-              onClick={() => toggleContinuations(contextMenu.nodeId)}
-            >
-              View continuations
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

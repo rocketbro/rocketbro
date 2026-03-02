@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiCheck, FiCopy } from "react-icons/fi";
+import { FiCheck, FiCopy, FiGitBranch } from "react-icons/fi";
 import type { OpenLoomNode } from "@/lib/openloom/types";
 import { LoomNodeContent } from "@/components/openloom/LoomNodeContent";
 
@@ -10,7 +10,6 @@ interface LoomNodeProps {
   continuationCount: number;
   isContinuationsOpen: boolean;
   onOpenContinuations: () => void;
-  onContextMenu: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 function isUserNode(author: string) {
@@ -22,7 +21,6 @@ export function LoomNode({
   continuationCount,
   isContinuationsOpen,
   onOpenContinuations,
-  onContextMenu,
 }: LoomNodeProps) {
   const [copied, setCopied] = useState(false);
   const isUser = isUserNode(node.author || "assistant");
@@ -38,11 +36,7 @@ export function LoomNode({
   };
 
   return (
-    <section
-      id={`loom-node-${node.id}`}
-      className="py-5"
-      onContextMenu={onContextMenu}
-    >
+    <section id={`loom-node-${node.id}`} className="py-5">
       <div className={isUser ? "flex justify-end" : "w-full"}>
         <article
           className={isUser
@@ -69,8 +63,9 @@ export function LoomNode({
                   onClick={onOpenContinuations}
                   data-continuation-toggle-for={node.id}
                   aria-expanded={isContinuationsOpen}
-                  className="px-2 hover:opacity-100 transition-opacity"
+                  className="inline-flex items-center gap-2 px-2 hover:opacity-100 transition-opacity"
                 >
+                  <FiGitBranch className="h-4 w-4" />
                   Continuations: {continuationCount}
                 </button>
               </>
