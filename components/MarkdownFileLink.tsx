@@ -56,8 +56,6 @@ export function MarkdownFileLink({
 
   const openModal = async () => {
     if (!resolvedUrl) {
-      setError("No markdown file is attached to this link.");
-      setIsOpen(true);
       return;
     }
 
@@ -70,7 +68,9 @@ export function MarkdownFileLink({
     setError(null);
 
     try {
-      const response = await fetch(resolvedUrl, { cache: "no-store" });
+      const response = await fetch(`/api/markdown?url=${encodeURIComponent(resolvedUrl)}`, {
+        cache: "no-store",
+      });
       if (!response.ok) {
         throw new Error(`Unable to load markdown file (${response.status}).`);
       }
@@ -90,15 +90,33 @@ export function MarkdownFileLink({
 
   const modalTitle = title || filename || "Markdown file";
 
+  if (!resolvedUrl) {
+    return <>{children}</>;
+  }
+
   return (
     <>
-      <button
-        type="button"
-        onClick={openModal}
-        className="inline text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark underline transition-colors break-all"
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          void openModal();
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "Enter" && event.key !== " ") {
+            return;
+          }
+
+          event.preventDefault();
+          event.stopPropagation();
+          void openModal();
+        }}
+        className="inline cursor-pointer text-accent dark:text-accent-dark hover:text-accent-hover dark:hover:text-accent-hover-dark underline transition-colors break-all"
       >
         {children}
-      </button>
+      </span>
 
       {isOpen && (
         <div

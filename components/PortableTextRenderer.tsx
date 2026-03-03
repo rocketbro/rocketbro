@@ -50,19 +50,30 @@ function getMarkdownFileMeta(value: unknown) {
   const markValue = value as { _type?: string };
   if (markValue._type === "markdownFile") {
     const legacy = value as LegacyMarkdownFileMarkValue;
+    const fileUrl = legacy.file?.asset?.url;
+    const assetRef = legacy.file?.asset?._ref;
+    if (!fileUrl && !assetRef) {
+      return null;
+    }
+
     return {
       title: legacy.title,
-      fileUrl: legacy.file?.asset?.url,
+      fileUrl,
       filename: legacy.file?.asset?.originalFilename,
-      assetRef: legacy.file?.asset?._ref,
+      assetRef,
     };
   }
 
   if (markValue._type === "markdownFileLink") {
     const referenced = value as ReferencedMarkdownFileMarkValue;
+    const fileUrl = referenced.resource?.file?.asset?.url;
+    if (!fileUrl) {
+      return null;
+    }
+
     return {
       title: referenced.title || referenced.resource?.title,
-      fileUrl: referenced.resource?.file?.asset?.url,
+      fileUrl,
       filename: referenced.resource?.file?.asset?.originalFilename,
       assetRef: undefined,
     };
