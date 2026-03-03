@@ -4,10 +4,27 @@ import { urlFor } from "@/lib/sanity/image";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { codepenEmbed } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { IMAGE_SIZES } from "@/lib/constants";
+import { MarkdownFileLink } from "@/components/MarkdownFileLink";
 import type { SITE_SETTINGS_QUERY_RESULT, POST_BY_SLUG_QUERY_RESULT } from "@/lib/sanity/types";
 
 type IntroTextContent = NonNullable<SITE_SETTINGS_QUERY_RESULT>["introText"];
 type PortableTextContent = NonNullable<POST_BY_SLUG_QUERY_RESULT>["body"];
+
+interface MarkdownFileMarkValue {
+  _type?: string;
+  title?: string;
+  file?: {
+    asset?: {
+      _ref?: string;
+      url?: string;
+      originalFilename?: string;
+    };
+  };
+}
+
+function isMarkdownFileMark(value: unknown): value is MarkdownFileMarkValue {
+  return typeof value === "object" && value !== null && (value as { _type?: string })._type === "markdownFile";
+}
 
 const components: PortableTextComponents = {
   block: {
@@ -70,6 +87,22 @@ const components: PortableTextComponents = {
         </a>
       );
     },
+    markdownFile: ({ value, children }) => {
+      if (!isMarkdownFileMark(value)) {
+        return <>{children}</>;
+      }
+
+      return (
+        <MarkdownFileLink
+          fileUrl={value.file?.asset?.url}
+          assetRef={value.file?.asset?._ref}
+          title={value.title}
+          filename={value.file?.asset?.originalFilename}
+        >
+          {children}
+        </MarkdownFileLink>
+      );
+    },
   },
   types: {
     image: ({ value }) => {
@@ -125,5 +158,10 @@ interface PortableTextRendererProps {
 
 export function PortableTextRenderer({ value }: PortableTextRendererProps) {
   if (!value) return null;
-  return <PortableText value={value} components={components} />;
+  return (
+    <PortableText
+      value={value as Parameters<typeof PortableText>[0]["value"]}
+      components={components}
+    />
+  );
 }

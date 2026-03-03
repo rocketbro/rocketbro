@@ -41,7 +41,21 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
       asset->,
       alt
     },
-    body,
+    body[]{
+      ...,
+      markDefs[]{
+        ...,
+        _type == "markdownFile" => {
+          ...,
+          file {
+            asset-> {
+              url,
+              originalFilename
+            }
+          }
+        }
+      }
+    },
     author-> {
       name,
       slug,

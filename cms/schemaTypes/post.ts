@@ -103,6 +103,42 @@ export default defineType({
                   },
                 ],
               },
+              {
+                name: 'markdownFile',
+                type: 'object',
+                title: 'Markdown File',
+                fields: [
+                  {
+                    name: 'title',
+                    type: 'string',
+                    title: 'Title',
+                    description: 'Optional label shown in the pop-up header',
+                  },
+                  {
+                    name: 'file',
+                    type: 'file',
+                    title: 'Markdown File',
+                    options: {
+                      accept: '.md,.markdown,text/markdown,text/plain',
+                    },
+                    validation: (Rule) => Rule.required(),
+                  },
+                ],
+                preview: {
+                  select: {
+                    title: 'title',
+                    filename: 'file.asset.originalFilename',
+                  },
+                  prepare(selection) {
+                    const displayTitle =
+                      selection.title || selection.filename || 'Markdown File'
+                    return {
+                      title: displayTitle,
+                      subtitle: 'Opens in a pop-up',
+                    }
+                  },
+                },
+              },
             ],
           },
         },
