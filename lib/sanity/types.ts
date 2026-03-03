@@ -195,16 +195,9 @@ export type Post = {
               _type: "link";
               _key: string;
             }
-          | {
-              title?: string;
-              file?: {
-                asset?: SanityFileAssetReference;
-                media?: unknown;
-                _type: "file";
-              };
-              _type: "markdownFile";
+          | ({
               _key: string;
-            }
+            } & MarkdownFileLink)
         >;
         level?: number;
         _type: "block";
@@ -236,6 +229,34 @@ export type Post = {
       _type: "image";
     };
   };
+};
+
+export type MarkdownResourceReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "markdownResource";
+};
+
+export type MarkdownFileLink = {
+  _type: "markdownFileLink";
+  title?: string;
+  resource?: MarkdownResourceReference;
+};
+
+export type MarkdownResource = {
+  _id: string;
+  _type: "markdownResource";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  file?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  description?: string;
 };
 
 export type Category = {
@@ -385,6 +406,9 @@ export type AllSanitySchemaTypes =
   | AuthorReference
   | CategoryReference
   | Post
+  | MarkdownResourceReference
+  | MarkdownFileLink
+  | MarkdownResource
   | Category
   | Author
   | Code
@@ -471,7 +495,7 @@ export type RECENT_POSTS_QUERY_RESULT = Array<{
 
 // Source: ../lib/sanity/queries.ts
 // Variable: POST_BY_SLUG_QUERY
-// Query: *[_type == "post" && slug.current == $slug][0] {    _id,    title,    slug,    excerpt,    publishedAt,    _updatedAt,    mainImage {      asset->,      alt    },    body[]{      ...,      markDefs[]{        ...,        _type == "markdownFile" => {          ...,          file {            asset-> {              url,              originalFilename            }          }        }      }    },    author-> {      name,      slug,      bio,      image {        asset->,        alt      }    },    categories[]-> {      _id,      title,      slug    },    seo {      metaTitle,      metaDescription,      ogImage {        asset->,        alt      }    }  }
+// Query: *[_type == "post" && slug.current == $slug][0] {    _id,    title,    slug,    excerpt,    publishedAt,    _updatedAt,    mainImage {      asset->,      alt    },    body[]{      ...,      markDefs[]{        ...,        _type == "markdownFileLink" => {          ...,          resource-> {            title,            file {              asset-> {                url,                originalFilename              }            }          }        },        _type == "markdownFile" => {          ...,          file {            asset-> {              url,              originalFilename            }          }        }      }    },    author-> {      name,      slug,      bio,      image {        asset->,        alt      }    },    categories[]-> {      _id,      title,      slug    },    seo {      metaTitle,      metaDescription,      ogImage {        asset->,        alt      }    }  }
 export type POST_BY_SLUG_QUERY_RESULT = {
   _id: string;
   title: string | null;
@@ -521,15 +545,18 @@ export type POST_BY_SLUG_QUERY_RESULT = {
               _key: string;
             }
           | {
+              _key: string;
+              _type: "markdownFileLink";
               title?: string;
-              file: {
-                asset: {
-                  url: string | null;
-                  originalFilename: string | null;
+              resource: {
+                title: string | null;
+                file: {
+                  asset: {
+                    url: string | null;
+                    originalFilename: string | null;
+                  } | null;
                 } | null;
               } | null;
-              _type: "markdownFile";
-              _key: string;
             }
         > | null;
         level?: number;
@@ -834,7 +861,7 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "post"] | order(publishedAt desc)[0...6] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    mainImage {\n      asset->,\n      alt\n    },\n    author-> {\n      name,\n      slug,\n      image {\n        asset->,\n        alt\n      }\n    },\n    categories[]-> {\n      _id,\n      title,\n      slug\n    }\n  }\n': RECENT_POSTS_QUERY_RESULT;
-    '\n  *[_type == "post" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    _updatedAt,\n    mainImage {\n      asset->,\n      alt\n    },\n    body[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "markdownFile" => {\n          ...,\n          file {\n            asset-> {\n              url,\n              originalFilename\n            }\n          }\n        }\n      }\n    },\n    author-> {\n      name,\n      slug,\n      bio,\n      image {\n        asset->,\n        alt\n      }\n    },\n    categories[]-> {\n      _id,\n      title,\n      slug\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
+    '\n  *[_type == "post" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    _updatedAt,\n    mainImage {\n      asset->,\n      alt\n    },\n    body[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "markdownFileLink" => {\n          ...,\n          resource-> {\n            title,\n            file {\n              asset-> {\n                url,\n                originalFilename\n              }\n            }\n          }\n        },\n        _type == "markdownFile" => {\n          ...,\n          file {\n            asset-> {\n              url,\n              originalFilename\n            }\n          }\n        }\n      }\n    },\n    author-> {\n      name,\n      slug,\n      bio,\n      image {\n        asset->,\n        alt\n      }\n    },\n    categories[]-> {\n      _id,\n      title,\n      slug\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n': POST_BY_SLUG_QUERY_RESULT;
     '\n  *[_type == "post" && defined(slug.current)] {\n    "slug": slug.current\n  }\n': ALL_POST_SLUGS_QUERY_RESULT;
     '\n  *[_type == "settings"][0] {\n    siteTitle,\n    siteDescription,\n    introText,\n    socialLinks[] {\n      platform,\n      url\n    },\n    seo {\n      metaTitle,\n      metaDescription,\n      ogImage {\n        asset->,\n        alt\n      }\n    }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "post" && slug.current != $slug] | order(publishedAt desc)[0...3] {\n    _id,\n    title,\n    slug,\n    excerpt,\n    publishedAt,\n    mainImage {\n      asset->,\n      alt\n    }\n  }\n': RELATED_POSTS_QUERY_RESULT;

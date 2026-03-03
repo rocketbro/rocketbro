@@ -45,6 +45,18 @@ export const POST_BY_SLUG_QUERY = defineQuery(`
       ...,
       markDefs[]{
         ...,
+        _type == "markdownFileLink" => {
+          ...,
+          resource-> {
+            title,
+            file {
+              asset-> {
+                url,
+                originalFilename
+              }
+            }
+          }
+        },
         _type == "markdownFile" => {
           ...,
           file {

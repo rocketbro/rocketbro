@@ -1,4 +1,5 @@
 import { PortableText, PortableTextComponents } from "@portabletext/react";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { urlFor } from "@/lib/sanity/image";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -10,7 +11,7 @@ import type { SITE_SETTINGS_QUERY_RESULT, POST_BY_SLUG_QUERY_RESULT } from "@/li
 type IntroTextContent = NonNullable<SITE_SETTINGS_QUERY_RESULT>["introText"];
 type PortableTextContent = NonNullable<POST_BY_SLUG_QUERY_RESULT>["body"];
 
-interface MarkdownFileMarkValue {
+interface LegacyMarkdownFileMarkValue {
   _type?: string;
   title?: string;
   file?: {
@@ -22,8 +23,70 @@ interface MarkdownFileMarkValue {
   };
 }
 
-function isMarkdownFileMark(value: unknown): value is MarkdownFileMarkValue {
-  return typeof value === "object" && value !== null && (value as { _type?: string })._type === "markdownFile";
+interface ReferencedMarkdownFileMarkValue {
+  _type?: string;
+  title?: string;
+  resource?: {
+    title?: string;
+    file?: {
+      asset?: {
+        url?: string;
+        originalFilename?: string;
+      };
+    };
+  };
+}
+
+interface MarkdownFileMarkProps {
+  value?: unknown;
+  children?: ReactNode;
+}
+
+function getMarkdownFileMeta(value: unknown) {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const markValue = value as { _type?: string };
+  if (markValue._type === "markdownFile") {
+    const legacy = value as LegacyMarkdownFileMarkValue;
+    return {
+      title: legacy.title,
+      fileUrl: legacy.file?.asset?.url,
+      filename: legacy.file?.asset?.originalFilename,
+      assetRef: legacy.file?.asset?._ref,
+    };
+  }
+
+  if (markValue._type === "markdownFileLink") {
+    const referenced = value as ReferencedMarkdownFileMarkValue;
+    return {
+      title: referenced.title || referenced.resource?.title,
+      fileUrl: referenced.resource?.file?.asset?.url,
+      filename: referenced.resource?.file?.asset?.originalFilename,
+      assetRef: undefined,
+    };
+  }
+
+  return null;
+}
+
+function renderMarkdownFileMark({ value, children }: MarkdownFileMarkProps) {
+  const markdownFileMeta = getMarkdownFileMeta(value);
+  if (!markdownFileMeta) {
+    return <>{children}</>;
+  }
+
+  return (
+    <MarkdownFileLink
+      fileUrl={markdownFileMeta.fileUrl}
+      assetRef={markdownFileMeta.assetRef}
+      title={markdownFileMeta.title}
+      filename={markdownFileMeta.filename}
+    >
+      {children}
+    </MarkdownFileLink>
+  );
 }
 
 const components: PortableTextComponents = {
@@ -87,22 +150,8 @@ const components: PortableTextComponents = {
         </a>
       );
     },
-    markdownFile: ({ value, children }) => {
-      if (!isMarkdownFileMark(value)) {
-        return <>{children}</>;
-      }
-
-      return (
-        <MarkdownFileLink
-          fileUrl={value.file?.asset?.url}
-          assetRef={value.file?.asset?._ref}
-          title={value.title}
-          filename={value.file?.asset?.originalFilename}
-        >
-          {children}
-        </MarkdownFileLink>
-      );
-    },
+    markdownFile: renderMarkdownFileMark,
+    markdownFileLink: renderMarkdownFileMark,
   },
   types: {
     image: ({ value }) => {
